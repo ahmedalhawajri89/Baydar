@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { Inter, JetBrains_Mono, Marhey } from 'next/font/google';
+import { Inter, JetBrains_Mono, Reem_Kufi } from 'next/font/google';
 import localFont from 'next/font/local';
 
 import { ServiceWorker } from '@/features/pwa/ServiceWorker';
@@ -52,12 +52,16 @@ const arabic = localFont({
 });
 
 /*
- * The wordmark's face (2026-11-13): Marhey, chosen by the owner for the
- * curves of the name. Used for the name alone, never for reading text, so
- * one weight and no preload: the mark falls back to the house face for the
- * first paint rather than holding the page for a logo.
+ * The wordmark's face (2026-11-17): Reem Kufi, chosen by the owner over the
+ * rounded Marhey it replaced, from four faces compared side by side. A
+ * geometric Kufi: the script's oldest monumental form, cut to straight
+ * strokes and right angles, so the name carries the heritage a بيدر comes
+ * from and still stands as hard as a company's mark. SIL Open Font License.
+ * Used for the name alone, never for reading text, so one weight and no
+ * preload: the mark falls back to the house face for the first paint rather
+ * than holding the page for a logo.
  */
-const wordmark = Marhey({
+const wordmark = Reem_Kufi({
   variable: '--font-wordmark',
   subsets: ['arabic', 'latin'],
   weight: ['700'],

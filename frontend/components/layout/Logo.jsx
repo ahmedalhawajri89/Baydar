@@ -87,7 +87,7 @@ export function Logo({ compact = false, tone = 'brand', size = 'md', wordClassNa
       {!compact && (
         <span
           className={cn(
-            // The name in its own face (Marhey) and never letter-spaced:
+            // The name in its own face (Reem Kufi) and never letter-spaced:
             // tracking pulls an Arabic word's joins apart.
             'font-[family-name:var(--font-wordmark),var(--font-stack)] leading-none font-bold tracking-normal',
             size === 'lg' ? 'text-[2.125rem]' : 'text-[1.625rem]',
