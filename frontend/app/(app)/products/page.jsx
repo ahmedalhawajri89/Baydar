@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 import { useProducts } from '@/features/catalog/useCatalog';
 import { ProductFormDialog } from '@/features/catalog/ProductFormDialog';
@@ -209,6 +210,14 @@ export default function ProductsPage() {
         actions={
           <div className="flex flex-wrap items-start gap-2">
             {can('products.export') && <ExportButton onExport={exportProducts} filters={query} />}
+            {can('products.update') && can('products.view_cost') && (
+              <Link
+                href="/products/costs"
+                className="inline-flex h-10 items-center gap-2 rounded-(--radius-control) border border-(--color-line) bg-(--color-surface) px-3.5 text-sm font-medium text-(--color-text) hover:bg-(--color-surface-hover)"
+              >
+                {t('products.costs.link')}
+              </Link>
+            )}
             <Can ability="products.create">
               <Button variant="primary" onClick={() => setEditing('new')}>
                 {t('products.new.action')}

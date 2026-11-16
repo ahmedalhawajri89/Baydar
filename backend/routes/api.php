@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ProductCostController;
 use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -190,6 +191,9 @@ Route::prefix('v1')->group(function (): void {
         Route::post('customers/{customer}/erase', [CustomerController::class, 'erase']);
 
         /* ---- Products ---------------------------------------------------- */
+        // Complete your costs (ADR-042). Before products/{product} so the path is not read as an id.
+        Route::get('products/missing-costs', [ProductCostController::class, 'index']);
+        Route::post('products/costs', [ProductCostController::class, 'store']);
         Route::get('products', [ProductController::class, 'index']);
         Route::post('products', [ProductController::class, 'store']);
         Route::get('products/{product}', [ProductController::class, 'show']);

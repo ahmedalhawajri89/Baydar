@@ -136,6 +136,16 @@ export function deleteExpense(id) {
   return api.delete(`/expenses/${id}`);
 }
 
+/* Complete your costs (ADR-042): products with no cost, and filling them in. */
+
+export function listMissingCosts() {
+  return api.get('/products/missing-costs');
+}
+
+export function completeCosts(body) {
+  return api.post('/products/costs', body);
+}
+
 /* Recurring expenses (ADR-041): rules that write the month's expense on their day. */
 
 export function listRecurringExpenses() {

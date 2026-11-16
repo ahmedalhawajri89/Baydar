@@ -2139,3 +2139,34 @@ rent in twelve times a year. A month left out overstates profit by the whole ren
 - The cash forecast still infers recurring categories from history (`CashForecast`); reading the rules
   directly is a later improvement.
 
+---
+
+## ADR-042 — A zero cost is a gap, and filling it may reach back
+
+**Status:** Accepted (2026-11)
+**Affects:** `CompleteCosts`, `GET /products/missing-costs`, `POST /products/costs`, `/products/costs`,
+the `zero_cost_products` insight
+**Builds on:** ADR-029 and ADR-030 (imported orders take the product's cost at import), METRICS.md §2.6
+
+**Context.** An order line snapshots its product's cost, and that snapshot never moves: a price change
+today must not restate last quarter. But a product a store never priced arrives at cost zero, and every
+order of it reports its whole price as profit. For a WooCommerce merchant, whose store holds no cost at
+all, that is every order. The insight said so; nothing let the owner fix it in one place.
+
+**Decision.**
+
+1. **One screen lists every active product at zero cost**, best sellers first, capped at two hundred so it
+   stays one sitting.
+2. **Filling in a cost may reach back, to zero lines only.** A line recorded at zero was never true, only
+   unknown; it takes the new cost and its order's `cogs_amount` is summed again from its lines. A line that
+   carried a real cost keeps it, so the snapshot rule of METRICS.md §2.6 holds for every figure that was
+   ever known.
+3. **Reaching back is the owner's choice**, on by default because the reason to come here is that the
+   profit already reported is wrong. Drafts are left alone; confirming one snapshots the new cost anyway.
+4. **Gated by `products.update` and `products.view_cost` together**, and recorded once in the activity log
+   with counts, not costs.
+5. **The insight links here** rather than to the figure it distorts.
+
+**Consequences.** A cost typed in by mistake and applied to the past can be corrected the same way only
+while the lines are still at zero, which they no longer are. Correcting a wrong past cost needs a
+deliberate restatement tool, which does not exist yet.

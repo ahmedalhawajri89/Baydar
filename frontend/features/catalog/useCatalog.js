@@ -225,6 +225,43 @@ export function useExpenses(filters) {
 }
 
 /**
+ * Products without a cost (ADR-042), and filling them in. Filling them in can
+ * reprice past orders' cost of goods, so every profit figure is refreshed.
+ */
+export function useMissingCosts() {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: queryKeys.products.missingCosts,
+    queryFn: catalog.listMissingCosts,
+  });
+
+  const save = useMutation({
+    mutationFn: catalog.completeCosts,
+    onSuccess: () => {
+      for (const key of [
+        queryKeys.products.all,
+        queryKeys.orders.all,
+        queryKeys.analytics.all,
+        queryKeys.dashboard.all,
+        queryKeys.insights.all,
+      ]) {
+        queryClient.invalidateQueries({ queryKey: key });
+      }
+    },
+  });
+
+  return {
+    products: query.data?.data ?? [],
+    meta: query.data?.meta,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+    refetch: query.refetch,
+    save,
+  };
+}
+
+/**
  * Recurring expense rules (ADR-041), and saving or stopping one. Saving can
  * write the month already due, so it refreshes everything an expense does.
  */

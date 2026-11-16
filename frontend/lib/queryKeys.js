@@ -24,6 +24,7 @@ export const queryKeys = {
     all: ['products'],
     list: (filters) => ['products', 'list', filters],
     detail: (id) => ['products', 'detail', String(id)],
+    missingCosts: ['products', 'missing-costs'],
   },
   customers: {
     all: ['customers'],

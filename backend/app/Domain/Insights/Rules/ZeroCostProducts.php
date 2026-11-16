@@ -50,7 +50,8 @@ final class ZeroCostProducts extends Rule
             severity: $this->severity(),
             title: __('insights.zero_cost_products.title'),
             message: trans_choice('insights.zero_cost_products.message', $count, ['count' => $this->count($count)]),
-            link: $context->link(['metric' => 'gross_profit']),
+            // Straight to where the gap is closed, not to the figure it distorts (ADR-042).
+            link: ['href' => '/products/costs'],
             values: ['count' => $count],
         );
     }

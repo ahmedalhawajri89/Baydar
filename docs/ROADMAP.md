@@ -658,6 +658,31 @@ number in it matches the dashboard for the same period.
 
 ---
 
+## Profit, complete *(built 2026-11-15/16)*
+
+The promise is "your store tells you what you sold; Baydar tells you whether you profited". A review of
+the product against that promise found it answered too kindly: profit was taken before the costs that
+grow with every order, before the expenses an owner will not type in monthly, and on products whose cost
+was never known. Three sections close the three gaps.
+
+1. **What it costs to sell (ADR-040).** Payment fees per method (with `installments` for Tabby and Tamara),
+   channel commission and the carrier's charge, each snapshotted on the order or payment as it happens.
+   Contribution profit sits between gross and net; net profit is now contribution profit less expenses,
+   unchanged for a business that states no rates. The carrier's real bill is corrected on the order.
+2. **Expenses every month (ADR-041).** A rule writes one ordinary expense on its day, never twice and never
+   one the owner deleted; a daily job at 01:30 UTC.
+3. **Complete your costs (ADR-042).** Every product at zero cost in one screen, and the option to give the
+   new cost to past lines recorded at zero. A line that carried a real cost keeps it.
+
+**Done when:** a Tamara order with free shipping shows its real profit and the dashboard matches a hand
+calculation (`SellingCostsTest`); rent typed once appears every month (`RecurringExpensesTest`); a
+product's cost filled in corrects the profit already reported (`CompleteCostsTest`).
+
+**Not done:** the cash forecast still infers recurring expenses from history rather than reading the rules;
+fees from a store's own payout reports (Salla, Shopify) are not imported, so rates are the owner's word.
+
+---
+
 ## Phase 08 — Post-MVP depth
 
 Ordered by likely value, not committed:

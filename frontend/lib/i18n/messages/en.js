@@ -1632,6 +1632,27 @@ const en = {
   },
 
   products: {
+    costs: {
+      title: 'Complete your costs',
+      description:
+        'These products have no cost, so every sale of them counts its whole price as profit. Enter what each one costs you.',
+      link: 'Complete your costs',
+      columns: {
+        product: 'Product',
+        price: 'Price',
+        sold: 'Sold without a cost',
+        cost: 'Your cost',
+      },
+      applyPast: 'Also use these costs for past orders recorded without one',
+      applyPastHint:
+        'Only lines recorded at zero change. An order that carried a real cost keeps it.',
+      save: 'Save costs',
+      saved: 'Saved. Costs set for {products} products; {lines} past order lines updated.',
+      emptyTitle: 'Every product has a cost',
+      emptyDescription: 'Your profit figures count the cost of everything you sold.',
+      nothingTyped: 'Enter at least one cost first.',
+      limited: 'Showing the {limit} best sellers. Save these, and the rest appear.',
+    },
     summary: {
       matched: 'Products matched',
       stockValue: 'Stock at cost',
