@@ -2246,3 +2246,38 @@ online payment yet.
 - Limits live in two files, `config/plans.php` (the authority) and `frontend/lib/plans.js` (the
   description). A test on each side pins the same figures.
 - `businesses` is a limit with nothing to enforce yet: one owner cannot add a second company anywhere.
+
+---
+
+## ADR-045 — The front page moves like a threshing floor
+
+**Status:** Accepted (2026-11)
+**Affects:** `features/marketing/` (`motion/WindField`, `motion/Magnetic`, `ChannelMarquee`, `ProductTour`,
+the floating `PublicHeader`, `Landing`)
+**Builds on:** ADR-043 (the front page and its threshing floor)
+
+**Context.** The owner asked for a front page that is more interactive, with professional, creative
+scrolling. ADR-043 had kept motion to two moments.
+
+**Decision.** More motion, all of it from the page's one image, the threshing floor:
+
+1. **Wind behind the headline.** A canvas of chaff drifting towards the end of the line and grain falling.
+   The pointer is a gust that pushes the chaff the way it moved. Faint, hidden from assistive technology,
+   paused off screen and in a hidden tab, absent with reduced motion.
+2. **The channels pass on the same wind**, in a band that quickens with scroll velocity. Assistive
+   technology reads it once, as a list.
+3. **A pinned tour of the real product** on wide screens with motion. Each screen comes in, the camera
+   zooms in on the figure that answers the question, a gold ring and a dimmed surround mark it, and a line
+   names it. The image is scaled about the ring's own point, so the ring never moves. Phones and reduced
+   motion get the stacked list.
+4. **The promises are ruled in, then written.** The page closes on Baydar's mark: the line draws, the
+   floor rises, the grain drops.
+5. **The header floats.** It steps aside while the reader scrolls down and returns on the way up, and a
+   gold line along its foot fills as the page is read. The main actions lean towards a fine pointer.
+
+**Rejected: ScrollSmoother.** It stands aside on any device that reports touch, which includes most Windows
+laptops, yet still makes pinned sections pin by transform. Both pinned sections broke. Scrolling stays
+native. The scrubbed sections lag the scroll a little on their own, which gives the smoothness that matters.
+
+**Consequences.** `ProductTour.TOUR` holds focus points measured on the current screenshots, one set per
+language because the Arabic screens are mirrored. Retaking the screenshots means measuring them again.

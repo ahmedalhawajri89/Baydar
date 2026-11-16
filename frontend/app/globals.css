@@ -451,6 +451,13 @@
   --text-4xl--line-height: 1.2;
   --text-display: clamp(2.25rem, 0.9rem + 5.6vw, 6rem);
   --text-display--line-height: 1.2;
+  /*
+   * The same headline in English runs about half again as long as in Arabic,
+   * so at the Arabic size it filled five lines. A step smaller keeps it to
+   * three or four, at the same visual weight.
+   */
+  --text-display-latin: clamp(2.25rem, 0.9rem + 4.1vw, 4.75rem);
+  --text-display-latin--line-height: 1.12;
 
   /*
    * The eyebrow label's letter-spacing — the 12px uppercase caption over a

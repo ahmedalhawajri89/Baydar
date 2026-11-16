@@ -2430,8 +2430,22 @@ const en = {
       lead: 'Baydar gathers your orders from everywhere you sell and takes off what you actually paid: the goods, the payment fees, the platform’s commission, shipping, rent and salaries. What is left is your profit, every morning.',
       demo: 'Try the live demo',
       pricing: 'See the prices',
-      sources:
-        'Works with Salla, Zid, Shopify and WooCommerce, and with Excel files for what you sell in the shop and on social media.',
+    },
+    channels: {
+      label: 'Gathers your orders from',
+      names: {
+        salla: 'Salla',
+        zid: 'Zid',
+        shopify: 'Shopify',
+        woocommerce: 'WooCommerce',
+        excel: 'Excel files',
+        api: 'API',
+      },
+    },
+    tour: {
+      profit: 'Net profit after every expense, the first thing you see',
+      cash: 'Your balance week by week, and when it nears zero',
+      stock: 'When each product runs out, and when to reorder',
     },
     threshing: {
       title: 'An order from Salla for {amount}',

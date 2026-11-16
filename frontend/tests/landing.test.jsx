@@ -75,8 +75,10 @@ describe('the page', () => {
   it('shows the product itself, in the reader’s language', () => {
     render(<Landing />);
 
-    const image = screen.getByAltText(/The Baydar dashboard/);
-    expect(image.getAttribute('src')).toContain('dashboard-en.webp');
+    // Twice: the stacked list, and the tour wide screens with motion get.
+    const images = screen.getAllByAltText(/The Baydar dashboard/);
+    expect(images.length).toBe(2);
+    for (const image of images) expect(image.getAttribute('src')).toContain('dashboard-en.webp');
   });
 
   it('offers the dashboard to someone already signed in, instead of a sign-in', () => {
@@ -89,6 +91,17 @@ describe('the page', () => {
       '/dashboard',
     );
     expect(within(header).queryByRole('link', { name: 'Sign in' })).toBeNull();
+  });
+
+  it('names every channel once for assistive technology, under the moving band', () => {
+    render(<Landing />);
+
+    const band = screen.getByRole('region', { name: 'Gathers your orders from' });
+    expect(
+      within(band)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['Salla', 'Zid', 'Shopify', 'WooCommerce', 'Excel files', 'API']);
   });
 
   it('links to the prices and to the ZATCA answer', () => {
