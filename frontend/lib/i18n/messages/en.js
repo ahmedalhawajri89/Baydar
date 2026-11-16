@@ -2516,6 +2516,126 @@ const en = {
       body: 'Connect your store or upload an Excel file, and see your orders’ profit after every cost.',
     },
   },
+  pricing: {
+    meta: {
+      title: 'Pricing | Baydar',
+      description:
+        'Start free with one sales channel, then choose Basic, Growth or Pro as your store grows.',
+    },
+    title: 'Pay when your store grows',
+    answer:
+      'Start free with one sales channel. When you add channels or staff, choose the plan that fits. Prices are monthly and exclude VAT.',
+    caption: 'Plan comparison',
+    recommended: 'Right for most stores',
+    free: 'Free',
+    perMonth: 'a month',
+    unlimited: 'No limit',
+    included: 'Included',
+    notIncluded: 'Not included',
+    cta: {
+      free: 'Start free',
+      paid: 'Start with this plan',
+    },
+    plans: {
+      free: { name: 'Free', who: 'For one store getting started' },
+      basic: { name: 'Basic', who: 'For selling in more than one place' },
+      growth: { name: 'Growth', who: 'For a store with a team that plans its cash' },
+      pro: { name: 'Pro', who: 'For more than one company, without limits' },
+    },
+    rows: {
+      channels: 'Connected sales channels',
+      users: 'Users',
+      questions: 'Ask Baydar questions a month',
+      forecasts: 'Cash forecast',
+      financing: 'Financing report for a bank or lender',
+      businesses: 'Companies',
+    },
+    everyPlan: {
+      title: 'In every plan',
+      profit: 'Profit after every cost, on every order',
+      expenses: 'Recurring monthly expenses',
+      stock: 'Stock run-out forecast',
+      brief: 'The morning brief',
+      roles: 'Permissions for each role',
+      languages: 'Arabic and English',
+    },
+    faq: {
+      title: 'Questions before you start',
+      vat: {
+        q: 'Do the prices include VAT?',
+        a: 'No. Prices exclude VAT, which is added when you pay.',
+      },
+      channel: {
+        q: 'What counts as a sales channel?',
+        a: 'Each store you connect: Salla, Zid, Shopify, WooCommerce or an API connection. Orders you enter by hand and Excel files do not count.',
+      },
+      limit: {
+        q: 'What happens when I reach my plan’s limit?',
+        a: 'Nothing you recorded stops and nothing is deleted. You just cannot connect a new channel or invite a new user until you move up a plan, and Ask Baydar questions come back at the start of the month.',
+      },
+      pay: {
+        q: 'How do I pay?',
+        a: 'Online payment is coming soon. Until then you start on the free plan, and you will not be asked for any money before you choose a plan.',
+      },
+      zatca: {
+        q: 'Does Baydar replace my invoicing system?',
+        a: 'No. Baydar reads your orders to work out your profit; it does not issue tax invoices.',
+      },
+    },
+  },
+
+  zatca: {
+    meta: {
+      title: 'Baydar and ZATCA',
+      description:
+        'Baydar is not e-invoicing software: it does not issue tax invoices or connect to Fatoora. Here is what it does with VAT, what it does not do, and who issues your invoices.',
+    },
+    title: 'Is Baydar ZATCA compliant?',
+    answer:
+      'Baydar is not e-invoicing software. It does not issue tax invoices or connect to the Fatoora platform. It reads your orders to work out your profit, and works alongside the system that issues your invoices.',
+    timeline: {
+      label: 'Wave {wave} of integration with the Fatoora platform',
+      announced: 'Announced by ZATCA',
+      today: 'Today',
+      deadline: 'Integration deadline',
+      daysLeft: {
+        one: '{count} day left until the deadline',
+        other: '{count} days left until the deadline',
+      },
+      passed: 'The integration deadline for this wave has passed.',
+    },
+    does: {
+      title: 'What Baydar does with VAT',
+      line: 'Works out VAT on every line when an order is confirmed, at the rate you set, and keeps it with the order as it was on the day.',
+      revenue: 'Leaves VAT out of revenue, so your profit never looks bigger than it is.',
+      report:
+        'Reports the VAT on sales for any period: by rate, what was refunded, and what is due. It is an operational report to help you check, not a tax return.',
+    },
+    doesNot: {
+      title: 'What Baydar does not do',
+      invoices: 'It does not issue tax invoices or simplified invoices.',
+      qr: 'It does not generate an invoice QR code.',
+      fatoora: 'It does not connect to the Fatoora platform or send it anything.',
+      returns: 'It does not file your VAT return.',
+      purchases:
+        'It does not record VAT on purchases, so it does not work out what you can reclaim.',
+    },
+    who: {
+      title: 'Who issues your invoices, then?',
+      body: 'Your online store, if it offers e-invoicing, or an accredited e-invoicing provider. Check that the solution you use is qualified with ZATCA before you integrate.',
+      link: 'ZATCA’s e-invoicing page',
+    },
+    wave: {
+      title: 'Does wave {wave} include you?',
+      body: 'It does if your VAT-subject revenue exceeded {threshold} in any year from {from} to {to}. You must then complete integration with the Fatoora platform by {deadline}, and ZATCA notifies every business it includes.',
+      note: 'Baydar does not change this deadline or exempt you from it.',
+    },
+    later: {
+      title: 'What we plan',
+      body: 'Sending confirmed orders to the invoicing provider you choose, so you do not enter them twice. We will not announce it before it works.',
+    },
+    reviewed: 'This information was checked on {date}. ZATCA’s website is the official reference.',
+  },
 };
 
 export default en;
