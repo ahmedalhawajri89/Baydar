@@ -683,6 +683,30 @@ fees from a store's own payout reports (Salla, Shopify) are not imported, so rat
 
 ---
 
+## Public, and priced *(built 2026-11-17)*
+
+A merchant who followed a link met a sign-in form, no price, and no answer about ZATCA. Three sections:
+
+1. **The front page (ADR-043).** `/` is public. One real order, the 200 riyals `SellingCostsTest` holds the
+   server to, is drawn as a disc whose slices are as large as the costs. Scrolling blows each slice off until
+   the 30.90 of profit settles as Baydar's mark. The markup is the finished ledger, so reduced motion and
+   crawlers get the whole argument. Real screenshots in both languages. A first visit follows the browser's
+   language.
+2. **Pricing and ZATCA (ADR-043).** The four plans compared in one table. A written stance: Baydar issues no
+   invoices and does not connect to Fatoora. The page says what it does with VAT, who issues invoices
+   instead, and how many days are left in wave 25.
+3. **Plans in the system (ADR-044).** Channels, users and Ask Baydar questions are limited when something is
+   added, never on what is already there. The cash forecast and the financing report are Growth and up.
+   Businesses that existed before plans are on Pro. The demo is Pro.
+
+**Done when:** a free business is refused a second store with a 402 that names Basic (`PlansTest`), and the
+landing's ledger adds up and fills its disc (`landing.test.jsx`).
+
+**Not done:** online payment (Moyasar or Tap, in the owner's name); `plans:assign` changes a plan until
+then. VAT on the prices is stated as excluded, which is the owner's decision to confirm.
+
+---
+
 ## Phase 08 — Post-MVP depth
 
 Ordered by likely value, not committed:
