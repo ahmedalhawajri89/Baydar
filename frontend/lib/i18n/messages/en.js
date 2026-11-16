@@ -1738,6 +1738,26 @@ const en = {
   },
 
   expenses: {
+    recurring: {
+      title: 'Every month',
+      description:
+        'Rent, salaries and subscriptions you pay every month. Baydar records each one on its day, so your profit is never missing them.',
+      add: 'Add a monthly expense',
+      newTitle: 'A monthly expense',
+      formDescription:
+        'Recorded on this day every month. A month already due is recorded as soon as you save.',
+      day: 'Day of the month',
+      dayHint: 'In a shorter month it falls on the last day.',
+      startsOn: 'From',
+      endsOn: 'Until (optional)',
+      every: 'Every month on day {day}',
+      until: 'until {date}',
+      empty: 'No monthly expenses yet. Add your rent or salaries once and stop typing them in.',
+      stop: 'Stop',
+      stopConfirm: 'Stop recording “{description}”? Months already recorded stay.',
+      stopAction: 'Stop it',
+      save: 'Save',
+    },
     summary: {
       matched: 'Expenses matched',
       amount: 'Total spent',

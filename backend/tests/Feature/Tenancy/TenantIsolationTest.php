@@ -18,6 +18,7 @@ use App\Models\ExpenseCategory;
 use App\Models\Integration;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\RecurringExpense;
 use App\Models\User;
 use App\Support\Tenancy\CurrentBusiness;
 use Illuminate\Routing\Route as RouteDefinition;
@@ -62,6 +63,14 @@ function otherBusiness(): array
         $product = Product::factory()->withStock(50)->create(['name' => LEAK_MARKER.' Product', 'sku' => 'LEAK-1']);
         $category = ExpenseCategory::factory()->create(['name' => LEAK_MARKER.' Rent']);
         $expense = Expense::factory()->create(['expense_category_id' => $category->id, 'description' => LEAK_MARKER.' expense']);
+        // A recurring expense rule (ADR-041), so its routes are asked too.
+        $recurring = RecurringExpense::query()->create([
+            'expense_category_id' => $category->id,
+            'description' => LEAK_MARKER.' rent',
+            'amount' => '100',
+            'day_of_month' => 1,
+            'starts_on' => '2026-01-01',
+        ]);
 
         // A connected store, so the routes that name one are covered by the
         // route-driven test below (P2 phase 6).
@@ -110,7 +119,7 @@ function otherBusiness(): array
         // A key for the universal connection, so its revoke route is asked too.
         [$apiKey] = ApiKey::issue(LEAK_MARKER.' key', $owner->id);
 
-        return compact('business', 'owner', 'staff', 'customer', 'product', 'expense', 'category', 'draft', 'fulfilled', 'integration', 'conversation', 'apiKey');
+        return compact('business', 'owner', 'staff', 'customer', 'product', 'expense', 'category', 'draft', 'fulfilled', 'integration', 'conversation', 'apiKey', 'recurring');
     });
 }
 
@@ -156,6 +165,7 @@ it('answers 404 to every route that names another business\'s record, and change
         'integration' => $b['integration']->id,
         'conversation' => $b['conversation']->id,
         'apiKey' => $b['apiKey']->id,
+        'recurringExpense' => $b['recurring']->id,
     ];
 
     $this->actingAs($this->ownerA);

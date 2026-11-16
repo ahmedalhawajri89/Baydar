@@ -135,3 +135,17 @@ export function updateExpense(id, body) {
 export function deleteExpense(id) {
   return api.delete(`/expenses/${id}`);
 }
+
+/* Recurring expenses (ADR-041): rules that write the month's expense on their day. */
+
+export function listRecurringExpenses() {
+  return api.get('/expenses/recurring');
+}
+
+export function createRecurringExpense(body) {
+  return api.post('/expenses/recurring', body);
+}
+
+export function deleteRecurringExpense(id) {
+  return api.delete(`/expenses/recurring/${id}`);
+}

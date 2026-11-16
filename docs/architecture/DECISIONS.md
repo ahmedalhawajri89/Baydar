@@ -2106,3 +2106,36 @@ pay?", "is free shipping eating my margin?") cannot be answered.
   says so.
 - Rates stated today do not reach past orders. A deliberate restatement tool can come later if owners
   ask for one; silently re-pricing history would break every report already sent to a lender.
+
+---
+
+## ADR-041 — Recurring expenses are rules that write ordinary expenses
+
+**Status:** Accepted (2026-11)
+**Affects:** `recurring_expenses`, `expenses.recurring_expense_id`, `GenerateRecurringExpenses`,
+`expenses:recur` (daily 01:30 UTC), `/expenses/recurring`, the expenses screen
+**Builds on:** ADR-040 (operating profit now carries the whole promise)
+
+**Context.** Operating profit is only as true as the expenses behind it, and an owner will not type the
+rent in twelve times a year. A month left out overstates profit by the whole rent.
+
+**Decision.**
+
+1. **A rule, not a kind of expense.** `recurring_expenses` holds what, how much, which day, from when and
+   until when. On its day each month it writes an ordinary `expenses` row. Metrics, exports, the brief
+   and the assistant read only those rows, so an expense still has one definition.
+2. **Once per month, enforced by the database.** `unique(recurring_expense_id, incurred_on)` makes the
+   daily run safe to repeat, retry or overlap.
+3. **A deleted month stays deleted.** The soft-deleted row keeps its place in the unique index, so a month
+   the owner removed is not written back the next morning.
+4. **The 31st falls on a short month's last day**, and a rule started long ago catches up one year at most.
+5. **Saving writes a month already due**, so rent due on the 1st and entered on the 10th is in this
+   month's profit at once.
+6. **Gated by the expense abilities.** A rule is a way of entering expenses; whoever may enter, change or
+   delete an expense may do the same to a rule. Stopping a rule keeps what it wrote.
+
+**Consequences.**
+- Changing a rule's amount changes future months only. A past month is corrected on its own row.
+- The cash forecast still infers recurring categories from history (`CashForecast`); reading the rules
+  directly is a later improvement.
+

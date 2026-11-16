@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SettingsController;
@@ -215,6 +216,11 @@ Route::prefix('v1')->group(function (): void {
         });
 
         /* ---- Expenses ---------------------------------------------------- */
+        // Recurring expenses (ADR-041). Before expenses/{expense} so the path is not read as an id.
+        Route::get('expenses/recurring', [RecurringExpenseController::class, 'index']);
+        Route::post('expenses/recurring', [RecurringExpenseController::class, 'store']);
+        Route::patch('expenses/recurring/{recurringExpense}', [RecurringExpenseController::class, 'update']);
+        Route::delete('expenses/recurring/{recurringExpense}', [RecurringExpenseController::class, 'destroy']);
         Route::get('expenses', [ExpenseController::class, 'index']);
         Route::post('expenses', [ExpenseController::class, 'store']);
         Route::get('expenses/{expense}', [ExpenseController::class, 'show']);

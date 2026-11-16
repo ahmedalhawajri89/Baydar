@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useExpenses } from '@/features/catalog/useCatalog';
 import { ExpenseFormDialog } from '@/features/catalog/ExpenseFormDialog';
 import { ExpenseSheet } from '@/features/catalog/ExpenseSheet';
+import { RecurringExpenses } from '@/features/catalog/RecurringExpenses';
 import { Can } from '@/features/auth/Can';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -167,6 +168,8 @@ function ExpensesScreen() {
           </div>
         }
       />
+
+      <RecurringExpenses />
 
       <FilterBar activeCount={activeKeys.length} onClear={clearFilters}>
         <Input

@@ -224,6 +224,39 @@ export function useExpenses(filters) {
   };
 }
 
+/**
+ * Recurring expense rules (ADR-041), and saving or stopping one. Saving can
+ * write the month already due, so it refreshes everything an expense does.
+ */
+export function useRecurringExpenses() {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: queryKeys.expenses.recurring,
+    queryFn: catalog.listRecurringExpenses,
+  });
+
+  const invalidate = () => {
+    for (const key of [
+      queryKeys.expenses.all,
+      queryKeys.analytics.all,
+      queryKeys.dashboard.all,
+      queryKeys.insights.all,
+    ]) {
+      queryClient.invalidateQueries({ queryKey: key });
+    }
+  };
+
+  return {
+    rules: query.data?.data ?? [],
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+    refetch: query.refetch,
+    create: useMutation({ mutationFn: catalog.createRecurringExpense, onSuccess: invalidate }),
+    remove: useMutation({ mutationFn: catalog.deleteRecurringExpense, onSuccess: invalidate }),
+  };
+}
+
 export function useExpenseActions() {
   const queryClient = useQueryClient();
 

@@ -40,6 +40,7 @@ export const queryKeys = {
   expenses: {
     all: ['expenses'],
     list: (filters) => ['expenses', 'list', filters],
+    recurring: ['expenses', 'recurring'],
   },
   analytics: {
     all: ['analytics'],

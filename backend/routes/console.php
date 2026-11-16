@@ -6,6 +6,7 @@ use App\Console\Commands\PruneActivityLogCommand;
 use App\Console\Commands\PruneUnclaimedIntegrations;
 use App\Console\Commands\SendMorningBriefs;
 use App\Console\Commands\SyncPolledStores;
+use App\Console\Commands\WriteRecurringExpenses;
 use App\Models\WebhookReceipt;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -77,5 +78,15 @@ Schedule::command('model:prune', ['--model' => [WebhookReceipt::class]])
  */
 Schedule::command(SyncPolledStores::class)
     ->everyFifteenMinutes()
+    ->withoutOverlapping()
+    ->onOneServer();
+
+/*
+ * Recurring expenses (ADR-041): each rule becomes the month's expense on its
+ * day. Early, so the morning brief at eight already counts today's rent.
+ * Safe to repeat; a month already written is skipped.
+ */
+Schedule::command(WriteRecurringExpenses::class)
+    ->dailyAt('01:30')
     ->withoutOverlapping()
     ->onOneServer();
