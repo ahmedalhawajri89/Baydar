@@ -145,4 +145,11 @@ return [
         'ip_address' => 'IP address',
     ],
 
+    'plans' => [
+        'free' => 'Free',
+        'basic' => 'Basic',
+        'growth' => 'Growth',
+        'pro' => 'Pro',
+    ],
+
 ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Authorization\Role;
+use App\Domain\Billing\Plans;
 use App\Domain\Users\UserAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\StoreUserRequest;
@@ -13,6 +14,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Support\Auth\EmailVerification;
 use App\Support\QueryFilter;
+use App\Support\Tenancy\CurrentBusiness;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -54,9 +56,10 @@ class UserController extends Controller
         );
     }
 
-    public function store(StoreUserRequest $request, EmailVerification $verification): JsonResponse
+    public function store(StoreUserRequest $request, EmailVerification $verification, Plans $plans): JsonResponse
     {
         $this->authorize('create', User::class);
+        $this->ensureRoomForUser($plans);
 
         $validated = $request->validated();
 
@@ -148,11 +151,21 @@ class UserController extends Controller
         );
     }
 
-    public function activate(Request $request, User $user): UserResource
+    public function activate(Request $request, User $user, Plans $plans): UserResource
     {
         $this->authorize('deactivate', $user);
 
+        if (! $user->is_active) {
+            $this->ensureRoomForUser($plans);
+        }
+
         return UserResource::make($this->administration->activate($user, $request->user()?->id));
+    }
+
+    /** Another active user needs room in the plan (ADR-044). */
+    private function ensureRoomForUser(Plans $plans): void
+    {
+        $plans->ensureRoomFor('users', CurrentBusiness::get()->id(), User::query()->where('is_active', true)->count());
     }
 
     public function deactivate(Request $request, User $user): UserResource

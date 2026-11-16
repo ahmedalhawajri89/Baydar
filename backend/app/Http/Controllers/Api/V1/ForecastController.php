@@ -6,11 +6,13 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Authorization\Ability;
 use App\Domain\Audit\AuditRecorder;
+use App\Domain\Billing\Plans;
 use App\Domain\Forecast\CashForecast;
 use App\Domain\Forecast\StockForecast;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
 use App\Support\Money;
+use App\Support\Tenancy\CurrentBusiness;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -49,11 +51,13 @@ class ForecastController extends Controller
      * Thirteen weeks of cash. A financial position built on costs, so it is
      * for a role that may see cost.
      */
-    public function cash(Request $request, CashForecast $forecast): JsonResponse
+    public function cash(Request $request, CashForecast $forecast, Plans $plans): JsonResponse
     {
         if (! ($request->user()?->can(Ability::MetricsViewCost->value) ?? false)) {
             abort(403);
         }
+
+        $plans->ensureFeature('forecasts', CurrentBusiness::get()->id());
 
         return response()->json(['data' => $forecast->for()]);
     }

@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
+use App\Http\Controllers\Api\V1\PlanController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProductCostController;
 use App\Http\Controllers\Api\V1\RecurringExpenseController;
@@ -334,6 +335,9 @@ Route::prefix('v1')->group(function (): void {
             ->middleware('throttle:assistant');
 
         /* ---- Business settings ------------------------------------------- */
+        // The plan, its limits and what is used against them (ADR-044).
+        Route::get('plan', [PlanController::class, 'show']);
+
         Route::get('settings', [SettingsController::class, 'show']);
         Route::patch('settings', [SettingsController::class, 'update']);
         Route::get('settings/expense-categories', [SettingsController::class, 'expenseCategories']);

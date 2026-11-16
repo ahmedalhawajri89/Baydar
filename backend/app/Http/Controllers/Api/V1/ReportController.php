@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Authorization\Ability;
 use App\Domain\Audit\AuditRecorder;
+use App\Domain\Billing\Plans;
 use App\Domain\Reports\FinancingReport;
 use App\Http\Controllers\Controller;
+use App\Support\Tenancy\CurrentBusiness;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -20,13 +22,15 @@ use Illuminate\Http\Request;
  */
 class ReportController extends Controller
 {
-    public function financing(Request $request, FinancingReport $report, AuditRecorder $recorder): JsonResponse
+    public function financing(Request $request, FinancingReport $report, AuditRecorder $recorder, Plans $plans): JsonResponse
     {
         $user = $request->user();
 
         if (! ($user?->can(Ability::MetricsViewCost->value) ?? false)) {
             abort(403);
         }
+
+        $plans->ensureFeature('financing', CurrentBusiness::get()->id());
 
         $data = $report->for($user);
 

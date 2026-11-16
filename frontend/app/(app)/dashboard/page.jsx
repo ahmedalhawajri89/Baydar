@@ -1,5 +1,6 @@
 'use client';
 
+import { PlanLocked } from '@/features/billing/PlanLocked';
 import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import { gsap } from 'gsap';
@@ -90,7 +91,7 @@ function monthAround(day) {
 }
 
 export default function DashboardPage() {
-  const { can, user } = useAuth();
+  const { can, user, hasFeature } = useAuth();
   const { t, locale } = useI18n();
   const { filters, setFilters } = useUrlFilters(PERIOD_CONFIG);
   const wide = useMediaQuery('(min-width: 90rem)');
@@ -111,7 +112,8 @@ export default function DashboardPage() {
   const cash = useQuery({
     queryKey: queryKeys.forecasts.cash,
     queryFn: forecasts.cash,
-    enabled: canSeeCost,
+    // The plan may not include it (ADR-044); then it is never requested.
+    enabled: canSeeCost && hasFeature('forecasts'),
   });
   const stock = useQuery({
     queryKey: queryKeys.forecasts.stock(7, 30),
@@ -281,13 +283,17 @@ export default function DashboardPage() {
         <div className="grid gap-4 lg:grid-cols-12">
           {canSeeCost && (
             <div data-rise className="min-w-0 lg:col-span-8">
-              <CashOutlook
-                data={cash.data?.data}
-                {...money}
-                loading={cash.isLoading}
-                canEdit={can('settings.update')}
-                className="h-full"
-              />
+              {hasFeature('forecasts') ? (
+                <CashOutlook
+                  data={cash.data?.data}
+                  {...money}
+                  loading={cash.isLoading}
+                  canEdit={can('settings.update')}
+                  className="h-full"
+                />
+              ) : (
+                <PlanLocked feature="forecasts" />
+              )}
             </div>
           )}
           <div

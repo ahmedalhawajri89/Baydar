@@ -85,6 +85,9 @@ export const queryKeys = {
     all: ['integrations'],
     list: ['integrations', 'list'],
   },
+  plan: {
+    detail: ['plan', 'detail'],
+  },
   settings: {
     all: ['settings'],
     detail: ['settings', 'detail'],

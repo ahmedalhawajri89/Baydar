@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Billing\PlanLimitReached;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\ProtectDemoAccounts;
 use App\Http\Middleware\SecurityHeaders;
@@ -203,6 +204,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
             if ($e instanceof ValidationException) {
                 $payload['errors'] = $e->errors();
+            }
+
+            // What the plan refused, and which plan would allow it (ADR-044).
+            if ($e instanceof PlanLimitReached) {
+                $payload['meta'] = ['limit' => $e->limit, 'plan' => $e->plan, 'upgrade' => $e->upgrade];
             }
 
             /*

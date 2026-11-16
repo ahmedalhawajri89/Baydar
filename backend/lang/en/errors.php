@@ -101,4 +101,18 @@ return [
         'last_owner_deactivate' => 'This is the last active Owner. Promote another user to Owner before deactivating this account.',
     ],
 
+    // Plans (ADR-044). :plan is the plan's name.
+    'plan' => [
+        'limit' => [
+            'channels' => 'The :plan plan has no room for another sales channel. Move to a higher plan to connect it; every store already connected keeps syncing.',
+            'users' => 'The :plan plan has no room for another active user. Move to a higher plan, or deactivate a user first.',
+            'questions' => 'You have used this month’s Ask Baydar questions on the :plan plan. They come back at the start of next month, or move to a higher plan.',
+            'businesses' => 'The :plan plan covers one company.',
+        ],
+        'feature' => [
+            'forecasts' => 'The cash forecast comes with the :plan plan.',
+            'financing' => 'The financing report comes with the :plan plan.',
+        ],
+    ],
+
 ];

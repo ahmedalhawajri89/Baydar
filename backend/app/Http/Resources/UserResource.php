@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Domain\Billing\Plans;
 use App\Models\BusinessSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,7 +55,18 @@ class UserResource extends JsonResource
                 // setup wizard; until then the owner is taken back to it.
                 'country' => $this->business?->country,
                 'onboarded' => $this->business?->onboarded_at !== null,
+                // What the plan offers, so a screen can say which plan has it
+                // before the request is refused (ADR-044).
+                'plan' => $this->planSummary(),
             ]),
         ];
+    }
+
+    /** @return array{key: string, features: array<string, bool>} */
+    private function planSummary(): array
+    {
+        $plan = app(Plans::class)->for((int) $this->business_id);
+
+        return ['key' => $plan->key, 'features' => $plan->features];
     }
 }

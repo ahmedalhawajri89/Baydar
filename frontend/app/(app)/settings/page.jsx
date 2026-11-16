@@ -1,5 +1,6 @@
 'use client';
 
+import { PlanUsage } from '@/features/billing/PlanUsage';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -77,6 +78,7 @@ const SECTIONS = [
   { id: 'periods', icon: 'calendar', title: 'settings.periods.title' },
   { id: 'vat', icon: 'percent', title: 'settings.vat.title' },
   { id: 'selling', icon: 'receipt', title: 'settings.sellingCosts.title' },
+  { id: 'plan', icon: 'diamond', title: 'plan.title' },
   { id: 'retention', icon: 'shield', title: 'settings.retention.title' },
 ];
 
@@ -590,6 +592,11 @@ export default function SettingsPage() {
             changing it back, and this one destroys records that nothing
             restores.
           */}
+          {/* The plan and what it uses (ADR-044): read-only, so outside the save. */}
+          <Section id="plan" icon="diamond" title={t('plan.title')}>
+            <PlanUsage />
+          </Section>
+
           <Section
             id="retention"
             icon="shield"

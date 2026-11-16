@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Domain\Billing\Plans;
 use App\Support\Tenancy\ScopedToBusiness;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -39,6 +40,22 @@ use Illuminate\Support\Carbon;
  */
 class Integration extends Model
 {
+    /**
+     * A store connected for the first time needs room in the plan (ADR-044).
+     *
+     * Here rather than in each way of connecting one, because there are five
+     * (Salla's claim, Zid, Shopify's app and token, WooCommerce) and a sixth
+     * will come: whichever path creates the row meets the same check.
+     * Reconnecting a store updates its row and is never refused.
+     */
+    protected static function booted(): void
+    {
+        static::creating(static function (self $integration): void {
+            $plans = app(Plans::class);
+            $plans->ensureRoomFor('channels', $integration->business_id, $plans->channelsInUse($integration->business_id));
+        });
+    }
+
     use ScopedToBusiness;
 
     public const STATUS_CONNECTED = 'connected';

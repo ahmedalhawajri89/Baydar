@@ -2636,6 +2636,26 @@ const en = {
     },
     reviewed: 'This information was checked on {date}. ZATCA’s website is the official reference.',
   },
+  plan: {
+    title: 'Plan',
+    current: 'Your plan: {plan}',
+    demo: 'The live demo runs with everything in the Pro plan.',
+    compare: 'Compare the plans',
+    of: '{used} of {limit}',
+    unlimited: '{used}, no limit',
+    change:
+      'Online payment is coming soon. Until then, everything you recorded stays as it is whatever your plan; a limit only stops adding something new.',
+    usage: {
+      channels: 'Connected sales channels',
+      users: 'Active users',
+      questions: 'Ask Baydar questions this month',
+    },
+    locked: {
+      forecasts: 'The cash forecast comes with the {plan} plan and up.',
+      financing: 'The financing report comes with the {plan} plan and up.',
+      body: 'Everything you recorded is kept, and this page appears when you move to a plan that includes it.',
+    },
+  },
 };
 
 export default en;

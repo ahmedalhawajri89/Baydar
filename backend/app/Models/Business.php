@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string $slug
  * @property string|null $country
  * @property string $status
+ * @property string $plan
  * @property Carbon|null $onboarded_at
  * @property Carbon|null $created_at
  */
@@ -33,7 +34,7 @@ class Business extends Model
     public const COUNTRIES = ['SA', 'AE', 'BH', 'KW', 'OM', 'QA', 'EG', 'JO', 'MA'];
 
     /** @var list<string> */
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['name', 'slug', 'plan'];
 
     /** @return array<string, string> */
     protected function casts(): array

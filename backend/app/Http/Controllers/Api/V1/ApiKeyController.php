@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Authorization\Ability;
 use App\Domain\Audit\AuditRecorder;
+use App\Domain\Billing\Plans;
 use App\Http\Controllers\Controller;
 use App\Models\ApiKey;
+use App\Support\Tenancy\CurrentBusiness;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,7 +31,7 @@ class ApiKeyController extends Controller
         return response()->json(['data' => $keys->map(fn (ApiKey $key): array => $this->present($key))->all()]);
     }
 
-    public function store(Request $request, AuditRecorder $recorder): JsonResponse
+    public function store(Request $request, AuditRecorder $recorder, Plans $plans): JsonResponse
     {
         $this->authorizeManage($request);
 
@@ -40,6 +42,9 @@ class ApiKeyController extends Controller
         if (ApiKey::query()->whereNull('revoked_at')->count() >= 20) {
             abort(422, __('integrations.api.too_many'));
         }
+
+        // A live key is a sales channel (ADR-044).
+        $plans->ensureRoomFor('channels', CurrentBusiness::get()->id(), $plans->channelsInUse(CurrentBusiness::get()->id()));
 
         [$key, $secret] = ApiKey::issue($input['name'], $request->user()?->id);
 

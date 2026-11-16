@@ -1,5 +1,6 @@
 'use client';
 
+import { PlanLocked } from '@/features/billing/PlanLocked';
 import { CashForecastView } from '@/features/forecasts/CashForecastView';
 import { StockForecastView } from '@/features/forecasts/StockForecastView';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -16,7 +17,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
  */
 export default function ForecastsPage() {
   const { t } = useI18n();
-  const { can } = useAuth();
+  const { can, hasFeature } = useAuth();
 
   const tabs = [
     can('inventory.view') && {
@@ -29,7 +30,8 @@ export default function ForecastsPage() {
       id: 'cash',
       label: t('forecasts.tabs.cash'),
       icon: 'wallet',
-      render: () => <CashForecastView />,
+      render: () =>
+        hasFeature('forecasts') ? <CashForecastView /> : <PlanLocked feature="forecasts" />,
     },
   ].filter(Boolean);
 

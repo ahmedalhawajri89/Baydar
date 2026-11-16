@@ -157,6 +157,12 @@ export function AuthProvider({ children }) {
       isLoading: isPending,
       isAuthenticated,
       can: (ability) => canAbility(user?.abilities, ability),
+      /*
+       * Whether the business's plan includes a feature (ADR-044). True when
+       * the server has not said, so an older response never locks a screen;
+       * the server refuses on its own either way.
+       */
+      hasFeature: (feature) => user?.business?.plan?.features?.[feature] ?? true,
       login,
       loginWithGoogle,
       register,

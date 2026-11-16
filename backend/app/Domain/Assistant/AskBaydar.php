@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Assistant;
 
+use App\Domain\Billing\Plans;
 use App\Models\AssistantConversation;
 use App\Models\AssistantMessage;
 use App\Models\BusinessSetting;
@@ -35,6 +36,7 @@ final class AskBaydar
     public function __construct(
         private readonly LanguageModel $model,
         private readonly AssistantTools $tools,
+        private readonly Plans $plans,
     ) {}
 
     /**
@@ -45,6 +47,10 @@ final class AskBaydar
         if ($this->usedThisMonth() >= (int) config('assistant.monthly_token_limit')) {
             throw new AssistantLimitReached;
         }
+
+        // The plan's questions a month (ADR-044), counted in the same ledger.
+        $this->plans->ensureRoomFor('questions', CurrentBusiness::get()->id(), $this->questionsThisMonth());
+        $this->countQuestion();
 
         $conversation ??= AssistantConversation::query()->create([
             'user_id' => $user->id,
@@ -151,6 +157,28 @@ final class AskBaydar
         return (int) TenantQuery::table('assistant_usage')
             ->where('month', $this->month())
             ->value('tokens');
+    }
+
+    /** Questions this business has asked this calendar month (ADR-044). */
+    public function questionsThisMonth(): int
+    {
+        return (int) TenantQuery::table('assistant_usage')
+            ->where('month', $this->month())
+            ->value('questions');
+    }
+
+    /**
+     * One more question, counted when it is asked rather than when it is
+     * answered: a question the model fails on has still been asked. One
+     * statement, for the same reason as the spend below.
+     */
+    private function countQuestion(): void
+    {
+        DB::statement(
+            'INSERT INTO assistant_usage (business_id, month, tokens, questions, created_at, updated_at) VALUES (?, ?, 0, 1, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE questions = questions + 1, updated_at = NOW()',
+            [CurrentBusiness::get()->id(), $this->month()],
+        );
     }
 
     /**

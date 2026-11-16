@@ -21,6 +21,9 @@ class BusinessFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name).'-'.Str::lower(Str::random(4)),
+            // Pro, so a test about something else never meets a plan limit;
+            // the limits have their own tests (ADR-044).
+            'plan' => 'pro',
         ];
     }
 }

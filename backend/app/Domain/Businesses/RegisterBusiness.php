@@ -39,6 +39,8 @@ final class RegisterBusiness
             $business = Business::query()->create([
                 'name' => $data['business_name'],
                 'slug' => $this->slugFor($data['business_name']),
+                // Every new business starts on the default plan (ADR-044).
+                'plan' => (string) config('plans.default'),
             ]);
 
             CurrentBusiness::get()->set($business->id);

@@ -2210,3 +2210,39 @@ every Saudi merchant asks, about ZATCA.
 - If `SellingCostsTest`'s figures change, `features/marketing/example.js` must change with them.
   `tests/landing.test.jsx` checks that the steps add up and that the slices fill the disc.
 - The screenshots go stale as the product changes; retake them from a freshly restored demo.
+
+---
+
+## ADR-044 — Plans limit what is added, never what is there
+
+**Status:** Accepted (2026-11)
+**Affects:** `config/plans.php`, `App\Domain\Billing\{Plan, Plans, PlanLimitReached}`, `businesses.plan`,
+`assistant_usage.questions`, `GET /plan`, `plans:assign`, `/me` (`business.plan`), the settings page, the
+cash forecast, the financing report, `lib/plans.js`
+**Builds on:** ADR-043 (the pricing page), ADR-038 (Ask Baydar's usage ledger)
+
+**Context.** The pricing page promises four plans, and the owner set the prices: free for one channel, then
+79, 149 and 299 riyals a month. A price means nothing if every account can do everything. There is no
+online payment yet.
+
+**Decision.**
+
+1. **Each business carries its plan.** A new business starts on `plans.default` (free). Every business that
+   existed before plans was moved to Pro by the migration, so the day limits arrived nobody lost anything.
+2. **Limits guard additions only.** They are checked when a store is connected, an API key is issued, a user
+   is invited or reactivated, or a question is asked. Never on a read. A business over its limit after a
+   downgrade keeps every store syncing and every user signed in.
+3. **The channel check lives on the model.** `Integration::creating` covers all five ways a store is
+   connected, and any sixth. Reconnecting a store is an update and is never refused.
+4. **Questions are counted in the usage ledger**, next to the tokens, when they are asked. Deleting a
+   conversation does not give a question back.
+5. **Features are refused with 402**, `plan.feature_unavailable`, naming the cheapest plan that has the
+   feature. A count at its limit is `plan.limit_reached`. The client also reads `business.plan` from `/me`
+   and shows "comes with Growth" in place of the screen, so the refusal is rarely what the user sees.
+6. **The public demo is Pro.** Its snapshot predates plans, and it exists to show the whole product.
+7. **`plans:assign` changes a plan** until online payment exists.
+
+**Consequences.**
+- Limits live in two files, `config/plans.php` (the authority) and `frontend/lib/plans.js` (the
+  description). A test on each side pins the same figures.
+- `businesses` is a limit with nothing to enforce yet: one owner cannot add a second company anywhere.

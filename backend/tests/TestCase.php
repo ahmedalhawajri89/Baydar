@@ -39,7 +39,9 @@ abstract class TestCase extends BaseTestCase
          * test about isolation creates a second one and switches with
          * CurrentBusiness::run() (ADR-023).
          */
-        $business = Business::query()->firstOrCreate(['slug' => 'opsight-test'], ['name' => 'Baydar Test']);
+        // On Pro, so a test about something else never meets a plan limit;
+        // the limits have their own tests (ADR-044).
+        $business = Business::query()->firstOrCreate(['slug' => 'opsight-test'], ['name' => 'Baydar Test', 'plan' => 'pro']);
         CurrentBusiness::get()->set($business->id);
 
         BusinessSetting::ensureExists(['company_name' => 'Baydar Test']);
