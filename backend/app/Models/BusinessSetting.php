@@ -37,6 +37,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $cash_safety_threshold
  * @property list<int>|null $weekend_days
  * @property int $activity_retention_days
+ * @property array<string, mixed>|null $payment_fees
+ * @property array<string, mixed>|null $channel_fees
+ * @property string|null $default_shipping_cost
  * @property Carbon|null $created_at
  */
 #[ObservedBy(AuditObserver::class)]
@@ -78,6 +81,9 @@ class BusinessSetting extends Model
         'week_starts_on',
         'weekend_days',
         'activity_retention_days',
+        'payment_fees',
+        'channel_fees',
+        'default_shipping_cost',
     ];
 
     /** @return array<string, string> */
@@ -96,6 +102,9 @@ class BusinessSetting extends Model
             'cash_balance' => 'decimal:3',
             'cash_balance_as_of' => 'date',
             'cash_safety_threshold' => 'decimal:3',
+            'payment_fees' => 'array',
+            'channel_fees' => 'array',
+            'default_shipping_cost' => 'decimal:3',
         ];
     }
 

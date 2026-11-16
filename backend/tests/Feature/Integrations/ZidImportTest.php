@@ -136,7 +136,7 @@ it('records each part of a split payment', function (): void {
 
     expect($payments)->toHaveCount(2)
         ->and($payments['card']->amount)->toBe('100.000')
-        ->and($payments['wallet']->amount)->toBe('15.000');
+        ->and($payments['installments']->amount)->toBe('15.000');
 });
 
 it('gives the customer\'s phone back its plus before placing it', function (): void {

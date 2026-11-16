@@ -29,7 +29,12 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property string $subtotal_amount
  * @property string $total_amount
+ * @property string|null $source
+ * @property string|null $external_id
  * @property string $cogs_amount
+ * @property string $payment_fee_amount
+ * @property string $channel_fee_amount
+ * @property string|null $shipping_cost
  * @property string $discount_amount
  * @property string $tax_amount
  * @property string $shipping_amount
@@ -84,6 +89,9 @@ class Order extends Model
             'shipping_amount' => CurrencyAmount::class,
             'total_amount' => CurrencyAmount::class,
             'cogs_amount' => CurrencyAmount::class,
+            'payment_fee_amount' => CurrencyAmount::class,
+            'channel_fee_amount' => CurrencyAmount::class,
+            'shipping_cost' => CurrencyAmount::class,
         ];
     }
 

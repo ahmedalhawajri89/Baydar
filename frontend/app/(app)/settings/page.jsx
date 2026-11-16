@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useSettings, useUpdateSettings } from '@/features/admin/useAdmin';
 import { useI18n } from '@/features/i18n/I18nProvider';
+import { SellingCostsFields } from '@/features/settings/SellingCostsFields';
 import { cn } from '@/lib/cn';
 import { formatNumber, getFormatLocale } from '@/lib/format';
 import { weekdayOptions } from '@/lib/weekdays';
@@ -75,6 +76,7 @@ const SECTIONS = [
   { id: 'business', icon: 'settings', title: 'settings.business.title' },
   { id: 'periods', icon: 'calendar', title: 'settings.periods.title' },
   { id: 'vat', icon: 'percent', title: 'settings.vat.title' },
+  { id: 'selling', icon: 'receipt', title: 'settings.sellingCosts.title' },
   { id: 'retention', icon: 'shield', title: 'settings.retention.title' },
 ];
 
@@ -190,7 +192,12 @@ export default function SettingsPage() {
     );
 
   // VAT changes apply to orders confirmed from now on; the server names them.
-  const vatChanged = (meta?.applies_from_now ?? []).some((key) => changed.includes(key));
+  const vatChanged = ['vat_enabled', 'vat_rate', 'prices_include_vat'].some((key) =>
+    changed.includes(key),
+  );
+  const costsChanged = ['payment_fees', 'channel_fees', 'default_shipping_cost'].some((key) =>
+    changed.includes(key),
+  );
 
   const weekend = form?.weekend_days ?? [];
 
@@ -537,6 +544,41 @@ export default function SettingsPage() {
             {vatChanged && (
               <Notice tone="info" icon="info" role="status">
                 {t('settings.vat.appliesFromNow')}
+              </Notice>
+            )}
+          </Section>
+
+          {/* ---------------------------------------------- Selling costs */}
+          {/*
+            What it costs to sell (ADR-040). Like VAT, a change applies from
+            now on: every payment and order keeps the costs it was recorded
+            with, so the badge is the blue one.
+          */}
+          <Section
+            id="selling"
+            icon="receipt"
+            title={t('settings.sellingCosts.title')}
+            impact="fromNow"
+          >
+            <p className="-mt-1 mb-5 text-sm leading-relaxed text-(--color-text-2)">
+              {t('settings.sellingCosts.description')}
+            </p>
+
+            <SellingCostsFields
+              form={form}
+              set={set}
+              disabled={disabled}
+              fieldErrors={fieldErrors}
+              meta={meta}
+            />
+
+            <Notice tone="warning" icon="alert">
+              {t('settings.sellingCosts.doubleCount')}
+            </Notice>
+
+            {costsChanged && (
+              <Notice tone="info" icon="info" role="status">
+                {t('settings.sellingCosts.appliesFromNow')}
               </Notice>
             )}
           </Section>

@@ -8,7 +8,8 @@ namespace App\Domain\Payments;
  * How a payment was received (ADR-022).
  *
  * Deliberately few, and by kind rather than by brand: "card" covers Mada,
- * Visa and Apple Pay alike, "wallet" covers STC Pay, BenefitPay and the rest.
+ * Visa and Apple Pay alike, "wallet" covers STC Pay, BenefitPay and the rest,
+ * "installments" covers Tabby and Tamara.
  * Baydar records that money arrived and how; it does not take payments, so it
  * has no reason to know which network carried them.
  */
@@ -19,6 +20,12 @@ enum PaymentMethod: string
     case BankTransfer = 'bank_transfer';
     case CashOnDelivery = 'cash_on_delivery';
     case Wallet = 'wallet';
+    /*
+     * Buy now, pay later: Tabby, Tamara and their like. Its own kind
+     * because its fee is several times a card's (ADR-040), so a merchant
+     * who cannot tell these orders apart cannot tell whether they pay.
+     */
+    case Installments = 'installments';
     case Other = 'other';
 
     public function label(): string

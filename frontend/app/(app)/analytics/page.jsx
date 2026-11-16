@@ -62,7 +62,7 @@ const FILTER_CONFIG = {
  * of goods are shown here and not there.
  */
 /*
- * The five steps of the period's profit, in the order the arithmetic runs.
+ * The seven steps of the period's profit, in the order the arithmetic runs.
  *
  * `total` stands on the axis; `down` is taken off the running figure. The
  * two totals are the server's own gross_profit and net_profit rather than
@@ -72,6 +72,8 @@ const WATERFALL_STEPS = [
   { key: 'net_revenue', kind: 'total' },
   { key: 'cogs', kind: 'down' },
   { key: 'gross_profit', kind: 'total' },
+  { key: 'selling_costs', kind: 'down' },
+  { key: 'contribution_profit', kind: 'total' },
   { key: 'operating_expenses', kind: 'down' },
   { key: 'net_profit', kind: 'total' },
 ];
@@ -83,6 +85,8 @@ const COMPACT_ORDER = [
   'net_profit',
   'net_margin',
   'operating_expenses',
+  'selling_costs',
+  'contribution_margin',
   'cogs',
   'new_customers',
   'returning_customers',
@@ -251,6 +255,7 @@ export default function AnalyticsPage() {
             // The server's own margins, beside the subtotals they belong to.
             margins={{
               gross_profit: metrics.gross_margin?.value ?? null,
+              contribution_profit: metrics.contribution_margin?.value ?? null,
               net_profit: metrics.net_margin?.value ?? null,
             }}
             currency={currency}

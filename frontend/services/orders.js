@@ -67,3 +67,8 @@ export function recordPayment(id, { amount, method, reference }) {
     reference: reference || undefined,
   });
 }
+
+/** What the carrier really charged for this order (ADR-040). Null clears it to unknown. */
+export function setShippingCost(id, shippingCost) {
+  return api.put(`/orders/${id}/shipping-cost`, { shipping_cost: shippingCost });
+}

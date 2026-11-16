@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Payments;
 
 use App\Domain\Orders\OrderStatus;
+use App\Domain\Orders\SellingCosts;
 use App\Models\Order;
 use App\Support\Money;
 use Illuminate\Support\Carbon;
@@ -75,18 +76,26 @@ final class RecordPayment
                 throw ValidationException::withMessages(['amount' => __('errors.payments.exceeds_outstanding')]);
             }
 
-            $order->payments()->create([
+            /*
+             * The gateway's fee, at today's rate, kept on the payment
+             * (ADR-040). Not fillable: a request cannot state its own fee.
+             */
+            $fee = SellingCosts::paymentFee($method, $amount);
+
+            $payment = $order->payments()->create([
                 'amount' => $amount,
                 'method' => $method,
                 'paid_at' => $paidAt ?? now(),
                 'reference' => $reference,
                 'recorded_by' => $actorId,
             ]);
+            $payment->forceFill(['fee_amount' => $fee])->save();
 
             $order->auditAs('order.payment_recorded', ['amount' => $amount, 'method' => $method->value]);
 
             $order->forceFill([
                 'amount_paid' => bcadd((string) $order->amount_paid, $amount, $scale),
+                'payment_fee_amount' => bcadd((string) $order->payment_fee_amount, $fee, $scale),
             ])->save();
 
             return $order->refresh();

@@ -117,6 +117,12 @@ class OrderResource extends JsonResource
                     (string) $this->cogs_amount,
                     Money::scale(),
                 ),
+                // What it cost to sell this order (ADR-040), withheld with the margin.
+                'payment_fee_amount' => (string) $this->payment_fee_amount,
+                'channel_fee_amount' => (string) $this->channel_fee_amount,
+                'shipping_cost' => $this->shipping_cost !== null ? (string) $this->shipping_cost : null,
+                // Worked out here, as METRICS.md §2.8a does for a period, so the screen does no arithmetic.
+                'contribution_profit' => $this->contributionProfit(),
             ]),
 
             'created_at' => $this->created_at?->toIso8601String(),
@@ -177,5 +183,16 @@ class OrderResource extends JsonResource
         $refunded = bcadd((string) $this->refunded_amount, (string) $this->refunded_vat_amount, $scale);
 
         return bcsub((string) $this->total_amount, $refunded, $scale);
+    }
+
+    /** Gross profit less this order's fees, commission and shipping beyond what the customer paid (ADR-040). */
+    private function contributionProfit(): string
+    {
+        $scale = Money::scale();
+        $gross = bcsub(bcsub((string) $this->subtotal_amount, (string) $this->discount_amount, $scale), (string) $this->cogs_amount, $scale);
+        $shipping = $this->shipping_cost !== null ? bcsub((string) $this->shipping_cost, (string) $this->shipping_amount, $scale) : '0';
+        $selling = bcadd(bcadd((string) $this->payment_fee_amount, (string) $this->channel_fee_amount, $scale), $shipping, $scale);
+
+        return bcsub($gross, $selling, $scale);
     }
 }

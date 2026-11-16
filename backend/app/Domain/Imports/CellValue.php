@@ -154,7 +154,8 @@ final class CellValue
             // 'مدي': normalise() has already turned مدى's ى into ي.
             str_contains($value, 'card') || str_contains($value, 'mada') || str_contains($value, 'مدي') || str_contains($value, 'بطاق') || str_contains($value, 'visa') || str_contains($value, 'apple') => PaymentMethod::Card,
             str_contains($value, 'transfer') || str_contains($value, 'bank') || str_contains($value, 'تحويل') => PaymentMethod::BankTransfer,
-            str_contains($value, 'wallet') || str_contains($value, 'stc') || str_contains($value, 'tabby') || str_contains($value, 'tamara') || str_contains($value, 'محفظ') => PaymentMethod::Wallet,
+            str_contains($value, 'tabby') || str_contains($value, 'tamara') || str_contains($value, 'تابي') || str_contains($value, 'تمارا') || str_contains($value, 'تقسيط') => PaymentMethod::Installments,
+            str_contains($value, 'wallet') || str_contains($value, 'stc') || str_contains($value, 'محفظ') => PaymentMethod::Wallet,
             default => PaymentMethod::Other,
         };
     }

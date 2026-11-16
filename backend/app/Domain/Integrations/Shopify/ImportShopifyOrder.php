@@ -130,6 +130,7 @@ final class ImportShopifyOrder
         return match (true) {
             str_contains($gateway, 'cash on delivery'), $gateway === 'cod' => PaymentMethod::CashOnDelivery,
             str_contains($gateway, 'bank') => PaymentMethod::BankTransfer,
+            str_contains($gateway, 'tabby'), str_contains($gateway, 'tamara') => PaymentMethod::Installments,
             str_contains($gateway, 'paypal'), str_contains($gateway, 'apple'), str_contains($gateway, 'shop_pay') => PaymentMethod::Wallet,
             str_contains($gateway, 'shopify_payments'), str_contains($gateway, 'stripe'), str_contains($gateway, 'card'), str_contains($gateway, 'tap') => PaymentMethod::Card,
             $gateway === 'manual' => PaymentMethod::Other,

@@ -150,6 +150,29 @@ final class MetricSummary
                 format: 'ratio',
                 emptyReason: __('labels.empty_reason.no_revenue_margin'),
             ),
+            // Fees, commission and shipping beyond what customers paid (ADR-040).
+            'selling_costs' => MetricValue::make(
+                key: 'selling_costs',
+                value: $this->metrics->sellingCosts($period),
+                previous: $previous ? $this->metrics->sellingCosts($previous) : null,
+                favourable: 'down',
+                format: 'money',
+            ),
+            'contribution_profit' => MetricValue::make(
+                key: 'contribution_profit',
+                value: $this->metrics->contributionProfit($period),
+                previous: $previous ? $this->metrics->contributionProfit($previous) : null,
+                favourable: 'up',
+                format: 'money',
+            ),
+            'contribution_margin' => MetricValue::make(
+                key: 'contribution_margin',
+                value: $this->metrics->contributionMargin($period),
+                previous: $previous ? $this->metrics->contributionMargin($previous) : null,
+                favourable: 'up',
+                format: 'ratio',
+                emptyReason: __('labels.empty_reason.no_revenue_margin'),
+            ),
             'operating_expenses' => MetricValue::make(
                 key: 'operating_expenses',
                 value: $this->metrics->operatingExpenses($period),

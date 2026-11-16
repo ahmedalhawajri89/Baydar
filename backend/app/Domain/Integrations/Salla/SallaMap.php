@@ -145,8 +145,8 @@ final class SallaMap
 
             'customer_wallet' => PaymentMethod::Wallet,
             'stc_pay' => PaymentMethod::Wallet,
-            'tabby' => PaymentMethod::Wallet,
-            'tamara' => PaymentMethod::Wallet,
+            'tabby' => PaymentMethod::Installments,
+            'tamara' => PaymentMethod::Installments,
             'paypal' => PaymentMethod::Wallet,
         ];
     }

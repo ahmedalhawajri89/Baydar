@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Authorization\Ability;
+use App\Domain\Orders\SellingCosts;
+use App\Domain\Payments\PaymentMethod;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Business settings — configuration an Owner edits at runtime.
@@ -73,6 +76,10 @@ class SettingsController extends Controller
                 'weekend_days' => $settings->weekend_days ?? [],
                 // How long the audit log is kept, in days (ADR-026).
                 'activity_retention_days' => (int) $settings->activity_retention_days,
+                // What it costs to sell (ADR-040), as normalised strings.
+                'payment_fees' => (object) SellingCosts::paymentRates(),
+                'channel_fees' => (object) SellingCosts::channelRates(),
+                'default_shipping_cost' => $settings->default_shipping_cost !== null ? (string) $settings->default_shipping_cost : null,
             ],
             'meta' => [
                 // Non-null: the guard above returned already if it were not.
@@ -88,7 +95,14 @@ class SettingsController extends Controller
                  * confirmed order keeps the VAT it was snapshotted with. Named so
                  * the screen can say that, rather than implying a restatement.
                  */
-                'applies_from_now' => ['vat_enabled', 'vat_rate', 'prices_include_vat'],
+                'applies_from_now' => [
+                    'vat_enabled', 'vat_rate', 'prices_include_vat',
+                    // Snapshotted onto each payment and order as it happens (ADR-040).
+                    'payment_fees', 'channel_fees', 'default_shipping_cost',
+                ],
+                // The keys the cost rates may be stated for.
+                'payment_methods' => array_map(static fn (PaymentMethod $m): string => $m->value, PaymentMethod::cases()),
+                'channels' => SellingCosts::channels(),
                 /*
                  * A third list, because the other two both say the wrong thing
                  * here. `affects_history` promises "the totals move, the
@@ -139,7 +153,27 @@ class SettingsController extends Controller
              * policy, and the only person it serves is the one being audited.
              */
             'activity_retention_days' => ['sometimes', 'integer', 'between:30,3650'],
+            /*
+             * What it costs to sell (ADR-040). A rate for a method or channel
+             * Baydar does not know is refused rather than stored, so a typo
+             * cannot sit in settings charging nothing while looking set.
+             */
+            'payment_fees' => ['sometimes', 'array'],
+            'payment_fees.*' => ['array:percent,fixed'],
+            'payment_fees.*.percent' => ['required', 'numeric', 'min:0', 'max:100'],
+            'payment_fees.*.fixed' => ['required', 'numeric', 'min:0', 'max:100000'],
+            'channel_fees' => ['sometimes', 'array'],
+            'channel_fees.*' => ['numeric', 'min:0', 'max:100'],
+            'default_shipping_cost' => ['sometimes', 'nullable', 'numeric', 'min:0', 'max:100000'],
         ]);
+
+        foreach (['payment_fees' => array_map(static fn (PaymentMethod $m): string => $m->value, PaymentMethod::cases()), 'channel_fees' => SellingCosts::channels()] as $field => $known) {
+            $unknown = array_diff(array_keys($validated[$field] ?? []), $known);
+
+            if ($unknown !== []) {
+                throw ValidationException::withMessages([$field => __('validation.in', ['attribute' => $field])]);
+            }
+        }
 
         $settings = BusinessSetting::current();
 

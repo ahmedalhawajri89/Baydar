@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Import;
 use App\Domain\Audit\AuditRecorder;
 use App\Domain\Orders\OrderReference;
 use App\Domain\Orders\OrderStatus;
+use App\Domain\Orders\SellingCosts;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
@@ -266,7 +267,15 @@ final class RecordImportedOrder
              * store reports one.
              */
             'cogs_amount' => Money::round($cogs),
-        ])->save();
+        ]);
+
+        /*
+         * The channel's commission and, unless a shipping cost is already
+         * known, the default one (ADR-040). A cost the owner typed in for
+         * this order survives the store's next delivery of it.
+         */
+        SellingCosts::stamp($order);
+        $order->save();
     }
 
     /**
@@ -278,8 +287,11 @@ final class RecordImportedOrder
     private function payments(Order $order, ImportedOrder $imported): void
     {
         $order->payments()->delete();
+        $fees = '0';
 
         if ($order->status === OrderStatus::Draft) {
+            $order->withoutAudit()->forceFill(['payment_fee_amount' => Money::zero()])->save();
+
             return;
         }
 
@@ -301,7 +313,11 @@ final class RecordImportedOrder
              * here for the reason the flag exists — the money changed hands
              * elsewhere and is being recorded after the fact (ADR-022).
              */
-            $payment->forceFill(['is_backfill' => true])->save();
+            $fee = SellingCosts::paymentFee($entry->method, Money::round($entry->amount));
+            $payment->forceFill(['is_backfill' => true, 'fee_amount' => $fee])->save();
+            $fees = bcadd($fees, $fee, Money::scale());
         }
+
+        $order->withoutAudit()->forceFill(['payment_fee_amount' => Money::round($fees)])->save();
     }
 }

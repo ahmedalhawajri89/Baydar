@@ -2062,3 +2062,47 @@ the server must check everything anyway.
 
 **Revisit when:** files routinely exceed the 20,000-row cap or the request's five minutes. The answer
 is then a queued import with progress, not a larger cap.
+
+---
+
+## ADR-040 — What it costs to sell, snapshotted order by order
+
+**Status:** Accepted (2026-11)
+**Affects:** `app/Domain/Orders/SellingCosts.php`, `MetricCalculator`, `RecordPayment`,
+`ConfirmOrder`, `RecordImportedOrder`, settings, `PUT /orders/{order}/shipping-cost`
+**Builds on:** ADR-013 (shipping is cost recovery), ADR-015 (money as strings), ADR-022 (payment ledger)
+
+**Context.** Baydar's promise is "your store tells you what you sold; Baydar tells you whether you
+profited". Net profit was net revenue less the goods less operating expenses. Between the goods and
+the expenses sit costs that grow with every order and that no store reports as one figure: a card
+gateway's 2–3 %, an instalment provider's 5–7 %, the carrier's bill, a channel's commission. Left out,
+profit is overstated on every order, and the questions a Gulf merchant actually asks ("do Tamara orders
+pay?", "is free shipping eating my margin?") cannot be answered.
+
+**Decision.**
+
+1. **Three costs, each snapshotted where it happens.** A payment's fee on `order_payments.fee_amount`
+   (summed onto `orders.payment_fee_amount`), a channel's commission on `orders.channel_fee_amount`,
+   the carrier's bill on `orders.shipping_cost`. Today's rate never reprices yesterday, exactly as a
+   line's `unit_cost` does not.
+2. **Rates are the business's own statement**, in settings: a percentage plus a fixed amount per payment
+   method, a percentage per channel, one default shipping cost. Nothing is assumed: a rate not stated
+   is zero, so the figure can only be too kind by what the owner left out, never wrong by a guess.
+3. **A new payment method, `installments`**, for Tabby and Tamara. Their fee is several times a card's;
+   folded into `wallet` they could not be told apart.
+4. **Unknown shipping is NULL, not zero**, and counts as covered by the customer's charge. Only the
+   difference between the carrier's bill and the customer's charge is a cost, keeping ADR-013.
+5. **The default shipping cost applies to parcels only:** every order from an online channel, and a
+   manual or file order only when the customer paid for delivery, since those may be shop sales.
+6. **Contribution profit sits between gross and net**, and net profit becomes contribution profit less
+   operating expenses. With no rates stated the two definitions coincide, so no existing business sees
+   a figure move.
+7. **The carrier's real bill replaces the estimate** through one endpoint, for a role that may both edit
+   orders and see margin. The new cost keys are redacted from the activity log like `unit_cost`.
+
+**Consequences.**
+- An unpaid order carries no payment fee yet. Accepted: the fee is incurred when money moves.
+- A merchant who already books gateway fees as an expense would count them twice. The settings screen
+  says so.
+- Rates stated today do not reach past orders. A deliberate restatement tool can come later if owners
+  ask for one; silently re-pricing history would break every report already sent to a lender.

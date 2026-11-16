@@ -396,7 +396,8 @@ const en = {
 
     sections: {
       stores: 'Store apps',
-      storesHint: 'Orders arrive from them on their own, and you can connect more than one store on the same platform.',
+      storesHint:
+        'Orders arrive from them on their own, and you can connect more than one store on the same platform.',
       universal: 'For any other system',
       universalHint: 'For every store or system that has no Baydar app yet.',
       more: 'Coming platforms',
@@ -1102,6 +1103,19 @@ const en = {
       label: 'Gross margin',
       definition: 'Gross profit as a proportion of net revenue.',
     },
+    selling_costs: {
+      label: 'Costs of selling',
+      definition:
+        'Payment fees, channel commission, and what the carrier charged beyond what customers paid for delivery.',
+    },
+    contribution_profit: {
+      label: 'Profit after selling costs',
+      definition: 'Gross profit less the costs of selling: what the orders themselves left you.',
+    },
+    contribution_margin: {
+      label: 'Margin after selling costs',
+      definition: 'Profit after selling costs as a proportion of net revenue.',
+    },
     operating_expenses: {
       label: 'Operating expenses',
       definition:
@@ -1109,7 +1123,8 @@ const en = {
     },
     net_profit: {
       label: 'Operating profit',
-      definition: 'Gross profit less operating expenses. An operating figure, not a statutory one.',
+      definition:
+        'Profit after selling costs, less operating expenses. An operating figure, not a statutory one.',
     },
     net_margin: {
       label: 'Net margin',
@@ -2136,6 +2151,27 @@ const en = {
       appliesFromNow:
         'This change applies to orders confirmed after you save. No order already confirmed is recalculated.',
     },
+    sellingCosts: {
+      title: 'Costs of selling',
+      description:
+        'What each order costs you beyond the goods: the payment provider’s fee, the channel’s commission, and what the carrier charges. Baydar takes them out of every order to show your real profit.',
+      paymentTitle: 'Payment fees',
+      paymentHint:
+        'A percentage of each payment plus a fixed amount. Leave a method empty if it costs you nothing.',
+      method: 'Payment method',
+      percent: 'Percent (%)',
+      fixed: 'Fixed amount',
+      channelTitle: 'Channel commission',
+      channelHint: 'A percentage of what the goods sold for, after discount.',
+      shippingTitle: 'Shipping',
+      shippingDefault: 'What the carrier usually charges per parcel',
+      shippingHint:
+        'Used for every online order, and for an order entered by hand only when the customer paid for delivery. You can correct it on any order once the carrier’s bill arrives.',
+      doubleCount:
+        'If you already record these fees as expenses, stop recording them there, or they will be counted twice.',
+      appliesFromNow:
+        'New rates apply to payments and orders from now on. Past orders keep the costs they were recorded with.',
+    },
     timezone: 'Business timezone',
     fiscalYear: 'Fiscal year starts',
     weekStartsOn: 'Week starts on',
@@ -2164,6 +2200,18 @@ const en = {
     vat: 'VAT',
     shipping: 'Shipping',
     total: 'Total',
+    sellingCosts: {
+      paymentFees: 'Payment fees',
+      channelFee: 'Channel commission',
+      shippingCost: 'Carrier’s charge',
+      shippingUnknown: 'Not known',
+      edit: 'Correct',
+      save: 'Save',
+      cancel: 'Cancel',
+      clear: 'Mark as not known',
+      inputLabel: 'What the carrier charged for this order',
+      note: 'Fees and commission are kept as they were when the order was paid and confirmed.',
+    },
     taxNote:
       'Tax and shipping are excluded from revenue. Tax is collected for a tax authority, and shipping is treated as cost recovery.',
     vatNote:
@@ -2288,6 +2336,7 @@ const en = {
     bank_transfer: 'Bank transfer',
     cash_on_delivery: 'Cash on delivery',
     wallet: 'Digital wallet',
+    installments: 'Pay in instalments',
     other: 'Other',
   },
 

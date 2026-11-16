@@ -28,7 +28,7 @@ class ActivityLogResource extends JsonResource
      *
      * @var list<string>
      */
-    private const COST_KEYS = ['cost', 'unit_cost', 'cogs_amount', 'margin_amount'];
+    private const COST_KEYS = ['cost', 'unit_cost', 'cogs_amount', 'margin_amount', 'shipping_cost', 'payment_fee_amount', 'channel_fee_amount', 'fee_amount'];
 
     /**
      * @return array<string, mixed>

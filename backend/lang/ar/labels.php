@@ -39,6 +39,7 @@ return [
         'bank_transfer' => 'تحويل بنكي',
         'cash_on_delivery' => 'الدفع عند الاستلام',
         'wallet' => 'محفظة رقمية',
+        'installments' => 'تقسيط',
         'other' => 'أخرى',
     ],
 

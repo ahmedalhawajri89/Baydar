@@ -209,7 +209,11 @@ final class ConfirmOrder
                 'prices_include_vat' => $vatEnabled && (bool) $settings->prices_include_vat,
                 'total_amount' => $total,
                 'cogs_amount' => $cogs,
-            ])->save();
+            ]);
+
+            // The channel's commission and the carrier's bill, at today's rates (ADR-040).
+            SellingCosts::stamp($order);
+            $order->save();
 
             return $order->refresh();
         });

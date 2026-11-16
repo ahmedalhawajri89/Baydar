@@ -40,6 +40,7 @@ return [
         'bank_transfer' => 'Bank transfer',
         'cash_on_delivery' => 'Cash on delivery',
         'wallet' => 'Digital wallet',
+        'installments' => 'Pay in instalments',
         'other' => 'Other',
     ],
 

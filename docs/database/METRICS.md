@@ -289,6 +289,46 @@ inverts sign and misleads.
 
 ---
 
+### 2.8a Selling Costs, Contribution Profit and Contribution Margin *(ADR-040, 2026-11)*
+
+**Definition.** What it cost to sell the period's orders, beyond the goods: the gateway's
+fees, the channel's commission, and what the carrier charged beyond what the customer paid
+for delivery. Contribution profit is what the orders left once those and the goods are paid.
+
+**Formula.**
+
+```
+Selling Costs(P)       = SUM(payment_fee_amount + channel_fee_amount
+                             + COALESCE(shipping_cost − shipping_amount, 0))
+Contribution Profit(P) = Gross Profit(P) − Selling Costs(P)
+Contribution Margin(P) = Contribution Profit(P) / Net Revenue(P)
+```
+
+over the qualifying orders, ranged on `placed_at` like every order metric.
+
+**Sources.** `orders` (the three columns are snapshots; `payment_fee_amount` is the running
+sum of `order_payments.fee_amount`).
+
+**Snapshots.** Each part is written when it happens, at the rates in settings at that
+moment: a payment's fee when the payment is recorded, the commission and the default
+shipping cost when the order is confirmed or imported. Changing a rate moves no past figure.
+
+**Comparison.** Supported. Margin in pp.
+
+**Restriction.** `metrics.view_cost`.
+
+**Edge cases.**
+- A business that states no rates has Selling Costs = 0, so Contribution Profit = Gross
+  Profit and Net Profit is unchanged from before ADR-040.
+- `shipping_cost` NULL is *unknown*, not free, and counts as fully covered by the customer's
+  charge. A carrier cost below the customer's charge is a negative shipping term: real money
+  kept, not clamped.
+- A payment's fee is never more than the payment. Fees and commission stay on a refunded
+  order: gateways and channels keep them.
+- Fees are recorded with payments, so an order not yet paid carries no payment fee.
+
+---
+
 ### 2.9 Operating Expenses
 
 **Definition.** Business running costs incurred in the period, excluding cost of goods.
@@ -319,7 +359,7 @@ rather than mysterious. Expense amortisation is out of scope.
 **Formula.**
 
 ```
-Net Profit = Gross Profit(P) − Operating Expenses(P)
+Net Profit = Contribution Profit(P) − Operating Expenses(P)   (ADR-040; was Gross Profit)
 Net Margin = Net Profit(P) / Net Revenue(P)
 ```
 

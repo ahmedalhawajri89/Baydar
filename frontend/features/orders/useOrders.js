@@ -87,7 +87,13 @@ export function useOrderActions(orderId) {
     onSuccess: invalidateAll,
   });
 
-  return { confirm, fulfil, cancel, refund, pay };
+  // A cost, not stock, but it moves every profit figure: same invalidation.
+  const shippingCost = useMutation({
+    mutationFn: (value) => ordersService.setShippingCost(orderId, value),
+    onSuccess: invalidateAll,
+  });
+
+  return { confirm, fulfil, cancel, refund, pay, shippingCost };
 }
 
 export function useOrderDraft() {

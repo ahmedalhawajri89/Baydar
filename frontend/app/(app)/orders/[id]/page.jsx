@@ -5,6 +5,7 @@ import { use } from 'react';
 
 import { useOrder } from '@/features/orders/useOrders';
 import { OrderActions } from '@/features/orders/OrderActions';
+import { OrderSellingCosts } from '@/features/orders/OrderSellingCosts';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useI18n } from '@/features/i18n/I18nProvider';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/ui/Badge';
@@ -204,6 +205,7 @@ export default function OrderDetailPage({ params }) {
                   numeric
                   strong
                 />
+                <OrderSellingCosts order={order} Row={Row} />
               </>
             )}
           </dl>

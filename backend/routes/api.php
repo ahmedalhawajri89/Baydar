@@ -164,6 +164,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel']);
         Route::post('orders/{order}/refund', [OrderController::class, 'refund']);
         Route::post('orders/{order}/payments', [OrderController::class, 'recordPayment']);
+        Route::put('orders/{order}/shipping-cost', [OrderController::class, 'shippingCost']);
 
         /* ---- Customers --------------------------------------------------- */
         Route::get('customers', [CustomerController::class, 'index']);

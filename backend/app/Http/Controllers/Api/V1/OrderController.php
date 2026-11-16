@@ -425,4 +425,34 @@ class OrderController extends Controller
             )->load(['customer', 'items', 'payments', 'refunds']),
         );
     }
+
+    /**
+     * What the carrier actually charged for this order (ADR-040).
+     *
+     * The default is an estimate stamped when the order was committed; the
+     * carrier's invoice arrives later and replaces it. Allowed on a
+     * committed order for that reason, and only to a role that may both edit
+     * orders and see their margin: the figure is a cost. Null clears it back
+     * to unknown, which counts as covered by what the customer paid.
+     */
+    public function shippingCost(Request $request, Order $order): OrderResource
+    {
+        $user = $request->user();
+
+        abort_unless(
+            $user !== null && $user->can(Ability::OrdersUpdate->value) && $user->can(Ability::OrdersViewMargin->value),
+            403,
+        );
+
+        $validated = $request->validate([
+            'shipping_cost' => ['present', 'nullable', 'numeric', 'min:0', 'max:100000'],
+        ]);
+
+        $cost = $validated['shipping_cost'] === null ? null : Money::round((string) $validated['shipping_cost']);
+
+        $order->auditAs('order.shipping_cost_set', ['shipping_cost' => $cost]);
+        $order->forceFill(['shipping_cost' => $cost])->save();
+
+        return OrderResource::make($order->refresh()->load(['customer', 'items', 'payments', 'refunds']));
+    }
 }

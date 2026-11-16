@@ -39,6 +39,19 @@ use Illuminate\Support\Facades\DB;
  */
 final class MetricCalculator
 {
+    /**
+     * What it cost to sell one order, as SQL over the orders table (ADR-040).
+     *
+     * The gateway's fees, the channel's commission, and what the carrier
+     * charged beyond what the customer paid for delivery. Shipping the
+     * customer pays is cost recovery, never revenue (ADR-013), so only the
+     * difference is a cost; a NULL shipping cost is unknown and counts as
+     * covered. Defined once here because the time series and the channel
+     * breakdown sum it per bucket and per channel, and three spellings of
+     * one cost would drift.
+     */
+    public const SELLING_COSTS_SQL = '(payment_fee_amount + channel_fee_amount + COALESCE(shipping_cost - shipping_amount, 0))';
+
     /** @var array<string, object> Per-period aggregates, memoised for the request. */
     private array $aggregates = [];
 
@@ -184,9 +197,67 @@ final class MetricCalculator
         return (string) ($total ?? Money::zero());
     }
 
+    /**
+     * What it cost to sell the period's orders: gateway fees, channel
+     * commissions, and shipping beyond what customers paid (ADR-040).
+     *
+     * Attached to the period the order was PLACED in, like refunds, so an
+     * order's economics stay on one row. Each part was snapshotted onto the
+     * order when it happened; today's rates move none of it.
+     */
+    public function sellingCosts(Period $period): string
+    {
+        $totals = $this->aggregate($period);
+        $scale = Money::scale();
+
+        return bcadd(bcadd($totals->payment_fees, $totals->channel_fees, $scale), $totals->shipping, $scale);
+    }
+
+    /**
+     * The three parts of sellingCosts(), for a screen that shows where the
+     * money went.
+     *
+     * @return array{payment_fees: string, channel_fees: string, shipping: string}
+     */
+    public function sellingCostParts(Period $period): array
+    {
+        $totals = $this->aggregate($period);
+
+        return [
+            'payment_fees' => $totals->payment_fees,
+            'channel_fees' => $totals->channel_fees,
+            'shipping' => $totals->shipping,
+        ];
+    }
+
+    /** What the orders left once the goods and the cost of selling them are paid. */
+    public function contributionProfit(Period $period): string
+    {
+        return bcsub($this->grossProfit($period), $this->sellingCosts($period), Money::scale());
+    }
+
+    /** Contribution profit over net revenue; null on no or negative revenue, as grossMargin. */
+    public function contributionMargin(Period $period): ?float
+    {
+        $revenue = $this->netRevenue($period);
+
+        if (bccomp($revenue, '0', Money::scale()) <= 0) {
+            return null;
+        }
+
+        return (float) bcdiv($this->contributionProfit($period), $revenue, 10);
+    }
+
+    /**
+     * What the business kept: contribution profit less operating expenses.
+     *
+     * Until ADR-040 this was gross profit less expenses. With no selling
+     * cost recorded the two are the same figure, so a business that states
+     * no rates sees no change.
+     */
     public function netProfit(Period $period): string
     {
-        return bcsub($this->grossProfit($period), $this->operatingExpenses($period), Money::scale());
+        return bcsub($this->contributionProfit($period), $this->operatingExpenses($period), Money::scale());
     }
 
     public function netMargin(Period $period): ?float
@@ -631,7 +702,7 @@ final class MetricCalculator
      * business so an instance that outlives a switch of business (a test, a
      * job) cannot answer for the wrong one (ADR-023).
      *
-     * @return object{gross: string, discounts: string, refunds: string, cogs: string, orders: int}
+     * @return object{gross: string, discounts: string, refunds: string, cogs: string, payment_fees: string, channel_fees: string, shipping: string, orders: int}
      */
     private function aggregate(Period $period): object
     {
@@ -652,6 +723,9 @@ final class MetricCalculator
                 .'COALESCE(SUM(discount_amount), 0) AS discounts, '
                 .'COALESCE(SUM(refunded_amount), 0) AS refunds, '
                 .'COALESCE(SUM(cogs_amount), 0) AS cogs, '
+                .'COALESCE(SUM(payment_fee_amount), 0) AS payment_fees, '
+                .'COALESCE(SUM(channel_fee_amount), 0) AS channel_fees, '
+                .'COALESCE(SUM(shipping_cost - shipping_amount), 0) AS shipping, '
                 .'COUNT(*) AS orders'
             )
             ->first();
@@ -662,6 +736,9 @@ final class MetricCalculator
             'discounts' => (string) ($row->discounts ?? Money::zero()),
             'refunds' => (string) ($row->refunds ?? Money::zero()),
             'cogs' => (string) ($row->cogs ?? Money::zero()),
+            'payment_fees' => Money::round((string) ($row->payment_fees ?? '0')),
+            'channel_fees' => Money::round((string) ($row->channel_fees ?? '0')),
+            'shipping' => Money::round((string) ($row->shipping ?? '0')),
             'orders' => (int) ($row->orders ?? 0),
         ];
     }

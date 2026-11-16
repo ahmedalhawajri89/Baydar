@@ -19,7 +19,7 @@ import { formatMoney } from '@/lib/format';
  */
 
 /** Card first: the most common way a Gulf customer pays. */
-const PAYMENT_METHODS = ['card', 'cash', 'cash_on_delivery', 'wallet', 'bank_transfer', 'other'];
+const PAYMENT_METHODS = ['card', 'cash', 'cash_on_delivery', 'wallet', 'installments', 'bank_transfer', 'other'];
 
 export function OrderActions({ order, onDone }) {
   const { t } = useI18n();

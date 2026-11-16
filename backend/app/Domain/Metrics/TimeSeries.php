@@ -48,10 +48,11 @@ final class TimeSeries
     public const METRICS = [
         'net_revenue', 'gross_revenue', 'orders_count', 'average_order_value',
         'cogs', 'gross_profit', 'gross_margin', 'operating_expenses',
+        'selling_costs', 'contribution_profit',
     ];
 
     /** The subset that reveals cost, and so needs metrics.view_cost. */
-    public const COST_METRICS = ['cogs', 'gross_profit', 'gross_margin', 'operating_expenses'];
+    public const COST_METRICS = ['cogs', 'gross_profit', 'gross_margin', 'operating_expenses', 'selling_costs', 'contribution_profit'];
 
     /**
      * Ratios per bucket. A bucket with nothing to divide by has no value —
@@ -195,6 +196,9 @@ final class TimeSeries
             'gross_margin' => 'CASE WHEN SUM(subtotal_amount - discount_amount - refunded_amount) > 0 '
                 .'THEN SUM(subtotal_amount - discount_amount - refunded_amount - cogs_amount) '
                 .'/ SUM(subtotal_amount - discount_amount - refunded_amount) ELSE NULL END',
+            'selling_costs' => 'COALESCE(SUM('.MetricCalculator::SELLING_COSTS_SQL.'), 0)',
+            'contribution_profit' => 'COALESCE(SUM(subtotal_amount - discount_amount - refunded_amount - cogs_amount - '
+                .MetricCalculator::SELLING_COSTS_SQL.'), 0)',
             'average_order_value' => 'CASE WHEN COUNT(*) > 0 '
                 .'THEN ROUND(SUM(subtotal_amount - discount_amount - refunded_amount) / COUNT(*), '.Money::scale().') ELSE NULL END',
             default => throw new InvalidArgumentException("Unknown time series metric: {$metric}."),

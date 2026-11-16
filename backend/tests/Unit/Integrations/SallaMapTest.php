@@ -106,7 +106,7 @@ it('files the Gulf\'s own payment methods under what they actually are', functio
     ['apple_pay', PaymentMethod::Card],
     // STC Pay is a wallet, as are the instalment providers.
     ['stc_pay', PaymentMethod::Wallet],
-    ['tabby', PaymentMethod::Wallet],
+    ['tabby', PaymentMethod::Installments],
     ['customer_wallet', PaymentMethod::Wallet],
     ['bank', PaymentMethod::BankTransfer],
     ['cod', PaymentMethod::CashOnDelivery],

@@ -46,6 +46,7 @@ final class DashboardFigures
             ->selectRaw('COUNT(*) AS orders')
             ->selectRaw('COALESCE(SUM(subtotal_amount - discount_amount - refunded_amount), 0) AS revenue')
             ->selectRaw('COALESCE(SUM(subtotal_amount - discount_amount - refunded_amount - cogs_amount), 0) AS profit')
+            ->selectRaw('COALESCE(SUM('.MetricCalculator::SELLING_COSTS_SQL.'), 0) AS selling')
             ->selectRaw('MAX(placed_at) AS last_order_at')
             ->groupBy('channel')
             ->get();
@@ -73,6 +74,10 @@ final class DashboardFigures
             if ($withCost) {
                 $entry['gross_margin'] = bccomp($revenue, '0', $scale) > 0
                     ? $this->ratio(Money::round((string) $row->profit), $revenue)
+                    : null;
+                // After fees, commission and shipping: whether the channel pays (ADR-040).
+                $entry['contribution_margin'] = bccomp($revenue, '0', $scale) > 0
+                    ? $this->ratio(Money::round(bcsub((string) $row->profit, (string) $row->selling, 10)), $revenue)
                     : null;
             }
 
@@ -121,14 +126,14 @@ final class DashboardFigures
     }
 
     /**
-     * Net profit per bucket: gross profit minus operating expenses, the same
+     * Net profit per bucket: contribution profit minus operating expenses, the same
      * subtraction MetricCalculator::netProfit() makes for the whole period.
      *
-     * @param  list<array<string, mixed>>  $grossProfit
+     * @param  list<array<string, mixed>>  $contributionProfit
      * @param  list<array<string, mixed>>  $expenses
      * @return list<array<string, mixed>>
      */
-    public function netProfitTrend(array $grossProfit, array $expenses): array
+    public function netProfitTrend(array $contributionProfit, array $expenses): array
     {
         $scale = Money::scale();
         $spent = [];
@@ -141,7 +146,7 @@ final class DashboardFigures
             $point['value'] = bcsub((string) $point['value'], $spent[$point['bucket']] ?? '0', $scale);
 
             return $point;
-        }, $grossProfit);
+        }, $contributionProfit);
     }
 
     /**

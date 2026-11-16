@@ -144,6 +144,7 @@ final class ImportWooOrder
         return match (true) {
             $gateway === 'cod' => PaymentMethod::CashOnDelivery,
             $gateway === 'bacs' => PaymentMethod::BankTransfer,
+            str_contains($gateway, 'tabby'), str_contains($gateway, 'tamara') => PaymentMethod::Installments,
             str_contains($gateway, 'stripe'), str_contains($gateway, 'card'), str_contains($gateway, 'tap'),
             str_contains($gateway, 'moyasar'), str_contains($gateway, 'checkout'), str_contains($gateway, 'paytabs') => PaymentMethod::Card,
             str_contains($gateway, 'paypal'), str_contains($gateway, 'apple'), str_contains($gateway, 'stc') => PaymentMethod::Wallet,

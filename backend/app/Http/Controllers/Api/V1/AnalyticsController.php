@@ -204,7 +204,10 @@ class AnalyticsController extends Controller
             $payload['profit_trend'] = $this->timeSeries->build($period, 'gross_profit', $grain, $user);
             $payload['expenses_trend'] = $this->timeSeries->build($period, 'operating_expenses', $grain, $user);
             $payload['margin_trend'] = $this->timeSeries->build($period, 'gross_margin', $grain, $user);
-            $payload['net_profit_trend'] = $this->figures->netProfitTrend($payload['profit_trend'], $payload['expenses_trend']);
+            $payload['net_profit_trend'] = $this->figures->netProfitTrend(
+                $this->timeSeries->build($period, 'contribution_profit', $grain, $user),
+                $payload['expenses_trend'],
+            );
             $payload['expenses_by_category'] = $this->figures->expensesByCategory(
                 $this->metrics->operatingExpensesByCategory($period),
             );

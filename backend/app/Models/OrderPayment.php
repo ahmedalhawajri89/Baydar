@@ -40,6 +40,7 @@ class OrderPayment extends Model
     {
         return [
             'amount' => CurrencyAmount::class,
+            'fee_amount' => CurrencyAmount::class,
             'method' => PaymentMethod::class,
             'paid_at' => 'datetime',
             'is_backfill' => 'boolean',

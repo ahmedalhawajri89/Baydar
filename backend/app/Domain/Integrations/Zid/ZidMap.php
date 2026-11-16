@@ -131,8 +131,8 @@ final class ZidMap
             'bank_transfer' => PaymentMethod::BankTransfer,
 
             'stc_pay' => PaymentMethod::Wallet,
-            'tabby' => PaymentMethod::Wallet,
-            'tamara' => PaymentMethod::Wallet,
+            'tabby' => PaymentMethod::Installments,
+            'tamara' => PaymentMethod::Installments,
         ];
     }
 

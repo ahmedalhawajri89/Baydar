@@ -66,7 +66,7 @@ it('reads payment methods, telling cash on delivery from cash', function (): voi
         ->and(CellValue::paymentMethod('cash'))->toBe(PaymentMethod::Cash)
         ->and(CellValue::paymentMethod('مدى'))->toBe(PaymentMethod::Card)
         ->and(CellValue::paymentMethod('Bank transfer'))->toBe(PaymentMethod::BankTransfer)
-        ->and(CellValue::paymentMethod('Tabby'))->toBe(PaymentMethod::Wallet)
+        ->and(CellValue::paymentMethod('Tabby'))->toBe(PaymentMethod::Installments)
         ->and(CellValue::paymentMethod('something'))->toBe(PaymentMethod::Other);
 });
 

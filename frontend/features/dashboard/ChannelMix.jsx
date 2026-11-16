@@ -27,16 +27,18 @@ export function ChannelMix({ channels = [], canSeeCost, currency, decimals, load
   const total = channels.reduce((sum, channel) => sum + channel.orders, 0);
   const name = (key) => t(`dashboard.home.channels.${key}`, {}) ?? key;
 
+  /*
+   * The margin after selling costs (ADR-040) where the server sends it: a
+   * channel whose fees eat its margin should not look like the best one.
+   */
+  const marginOf = (channel) => channel.contribution_margin ?? channel.gross_margin;
+
   const withMargin = canSeeCost
-    ? channels.filter(
-        (channel) => channel.gross_margin !== null && channel.gross_margin !== undefined,
-      )
+    ? channels.filter((channel) => marginOf(channel) !== null && marginOf(channel) !== undefined)
     : [];
   const best =
     withMargin.length > 1
-      ? withMargin.reduce((top, channel) =>
-          channel.gross_margin > top.gross_margin ? channel : top,
-        )
+      ? withMargin.reduce((top, channel) => (marginOf(channel) > marginOf(top) ? channel : top))
       : null;
 
   return (
@@ -101,15 +103,13 @@ export function ChannelMix({ channels = [], canSeeCost, currency, decimals, load
                   <span className="tabular text-sm font-semibold text-(--color-text)">
                     {money(channel.revenue)}
                   </span>
-                  {canSeeCost &&
-                    channel.gross_margin !== null &&
-                    channel.gross_margin !== undefined && (
-                      <span className="text-[0.6875rem] text-(--color-text-2)">
-                        {t('dashboard.home.channelsCard.margin', {
-                          value: formatPercent(channel.gross_margin),
-                        })}
-                      </span>
-                    )}
+                  {canSeeCost && marginOf(channel) !== null && marginOf(channel) !== undefined && (
+                    <span className="text-[0.6875rem] text-(--color-text-2)">
+                      {t('dashboard.home.channelsCard.margin', {
+                        value: formatPercent(marginOf(channel)),
+                      })}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -119,7 +119,7 @@ export function ChannelMix({ channels = [], canSeeCost, currency, decimals, load
             <p className="mt-auto rounded-(--radius-panel) bg-(--color-accent-soft) px-3.5 py-3 text-xs leading-relaxed text-(--color-text)">
               {t('dashboard.home.channelsCard.best', {
                 channel: name(best.key),
-                value: formatPercent(best.gross_margin),
+                value: formatPercent(marginOf(best)),
               })}
             </p>
           )}
