@@ -437,6 +437,22 @@
   --text-3xl--line-height: 1.25;
 
   /*
+   * The public pages' sizes (ADR-043), and only theirs. The application is a
+   * working instrument read at arm's length for hours, so it stops at 32. A
+   * visitor deciding whether to trust a product reads differently: body at
+   * 18 for the lead, headings that carry the argument by size alone. The
+   * display size breathes with the viewport so a phone gets a headline that
+   * fits and a wide screen one that fills; 1.2 rather than tighter, because
+   * Arabic marks above and below the letters would touch the next line.
+   */
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.75;
+  --text-4xl: 2.75rem;
+  --text-4xl--line-height: 1.2;
+  --text-display: clamp(2.25rem, 0.9rem + 5.6vw, 6rem);
+  --text-display--line-height: 1.2;
+
+  /*
    * The eyebrow label's letter-spacing — the 12px uppercase caption over a
    * panel, a table header or a sidebar group (UI_UX_DIRECTION.md §3, which
    * allows letter-spacing there and nowhere else).

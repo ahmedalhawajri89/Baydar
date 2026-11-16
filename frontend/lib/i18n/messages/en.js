@@ -2399,6 +2399,123 @@ const en = {
     nextPage: 'Next page',
     page: '{page} / {pages}',
   },
+  publicSite: {
+    nav: {
+      label: 'Public pages',
+      pricing: 'Pricing',
+      zatca: 'Baydar and ZATCA',
+      signIn: 'Sign in',
+      dashboard: 'Open your dashboard',
+    },
+    cta: {
+      demo: 'Try the demo',
+      start: 'Start free',
+    },
+    footer: {
+      label: 'Site links',
+      line: 'The real profit on every order, in Arabic and English.',
+      privacy: 'Privacy',
+    },
+  },
+
+  landing: {
+    meta: {
+      title: 'Baydar: the real profit on every order',
+      description:
+        'Baydar gathers your orders from Salla, Zid, Shopify and WooCommerce and takes off the goods, payment fees, commission, shipping and the month’s expenses, so you see your real profit, your cash ahead and when your stock runs out.',
+    },
+    hero: {
+      first: 'Your store tells you what you sold.',
+      second: 'Baydar tells you whether you made money.',
+      lead: 'Baydar gathers your orders from everywhere you sell and takes off what you actually paid: the goods, the payment fees, the platform’s commission, shipping, rent and salaries. What is left is your profit, every morning.',
+      demo: 'Try the live demo',
+      pricing: 'See the prices',
+      sources:
+        'Works with Salla, Zid, Shopify and WooCommerce, and with Excel files for what you sell in the shop and on social media.',
+    },
+    threshing: {
+      title: 'An order from Salla for {amount}',
+      question: 'How much of it is left?',
+      lead: 'These are real figures, from the calculation Baydar is tested against, and every line is a cost your store does not take off.',
+      storeShows: 'What your store shows',
+      baydarShows: 'What you actually made',
+      summary: 'Of a {amount} order, {profit} is left as profit once every cost is taken off.',
+      left: 'Your profit on this order',
+      steps: {
+        goods: {
+          name: 'Cost of the goods',
+          detail: 'What you paid the supplier for what you sold',
+        },
+        paymentFee: {
+          name: 'Tamara’s fee',
+          detail: '{rate} plus {fixed} on the {paid} the customer paid',
+        },
+        channelFee: { name: 'Salla’s commission', detail: '{rate} of the order' },
+        shipping: {
+          name: 'Shipping',
+          detail: 'The carrier charged {carrier}; the customer paid {paid}',
+        },
+        rent: { name: 'The month’s expenses', detail: 'This order’s share of the rent' },
+      },
+    },
+    views: {
+      title: 'Three questions Baydar answers every morning',
+      profit: {
+        question: 'Did I make money this month?',
+        answer:
+          'The dashboard opens on net profit after every cost, not on sales. Below it, what needs you this week: a product running out, a margin slipping, an expense going up.',
+        alt: 'The Baydar dashboard: net profit, revenue and orders, and this week’s alerts',
+      },
+      cash: {
+        question: 'How much cash will I have?',
+        answer:
+          'Your balance forecast week by week for the next {weeks} weeks, from your orders and expenses, with the week it drops below the line you set.',
+        alt: 'The cash forecast in Baydar: the expected balance each week and the safety line',
+      },
+      stock: {
+        question: 'When will this product run out?',
+        answer:
+          'Every product has an expected run-out date from how fast it sells, so you reorder before you lose sales, and stop tying money up in stock that does not move.',
+        alt: 'The stock forecast in Baydar: the products closest to running out, and when',
+      },
+    },
+    promises: {
+      title: 'What you can rely on',
+      records: {
+        term: 'Figures from your records',
+        body: 'Every figure is worked out from the orders and expenses you recorded, to the last fils, and kept as it was on the day. Changing a price today does not change yesterday’s profit.',
+      },
+      roles: {
+        term: 'Staff do not see cost',
+        body: 'Each role has its own permissions. Cost, margin and profit are for the owner and whoever they choose; staff see sales only.',
+      },
+      isolated: {
+        term: 'Your company is walled off',
+        body: 'Each company’s data is kept apart from every other’s, and that separation is tested automatically on every route in the system before each release.',
+      },
+      assistant: {
+        term: 'Ask Baydar explains, it does not invent',
+        body: 'The assistant reads the figures the system worked out and explains them to you. It never does the money arithmetic itself.',
+      },
+    },
+    pricing: {
+      title: 'What does it cost?',
+      body: 'Free for one sales channel and one user. Paid plans start at {price} a month.',
+      link: 'Compare the plans',
+    },
+    zatca: {
+      title: 'Is Baydar ZATCA compliant?',
+      body: 'Baydar does not issue tax invoices; it reads your orders to work out your profit. Your invoices still come from your store or an accredited e-invoicing provider, and Baydar works alongside it.',
+      link: 'Read our full answer',
+    },
+    closing: {
+      demoTitle: 'Open the live demo. No account needed.',
+      demoBody:
+        'A demo company with its orders, expenses and stock. Sign in as one of four roles, owner, manager, analyst or staff, and see what each one sees.',
+      title: 'Start with one channel, free.',
+      body: 'Connect your store or upload an Excel file, and see your orders’ profit after every cost.',
+    },
+  },
 };
 
 export default en;

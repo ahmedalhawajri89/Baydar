@@ -4,13 +4,8 @@ import localFont from 'next/font/local';
 
 import { ServiceWorker } from '@/features/pwa/ServiceWorker';
 import { Providers } from './providers';
-import {
-  LOCALE_COOKIE,
-  NUMERALS_COOKIE,
-  directionOf,
-  normaliseLocale,
-  normaliseNumerals,
-} from '@/lib/i18n/config';
+import { NUMERALS_COOKIE, directionOf, normaliseNumerals } from '@/lib/i18n/config';
+import { requestLocale } from '@/lib/i18n/server';
 import './globals.css';
 import { brand } from '@/brand.config';
 
@@ -132,7 +127,8 @@ export default async function RootLayout({ children }) {
    * right in the overwhelmingly common case where it matches.
    */
   const store = await cookies();
-  const locale = normaliseLocale(store.get(LOCALE_COOKIE)?.value);
+  // With no cookie yet, the browser's own language (ADR-043).
+  const locale = await requestLocale();
   const numerals = normaliseNumerals(locale, store.get(NUMERALS_COOKIE)?.value);
 
   return (

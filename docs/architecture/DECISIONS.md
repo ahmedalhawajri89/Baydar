@@ -2170,3 +2170,43 @@ all, that is every order. The insight said so; nothing let the owner fix it in o
 **Consequences.** A cost typed in by mistake and applied to the past can be corrected the same way only
 while the lines are still at zero, which they no longer are. Correcting a wrong past cost needs a
 deliberate restatement tool, which does not exist yet.
+
+---
+
+## ADR-043 — A public front page that threshes one real order
+
+**Status:** Accepted (2026-11)
+**Affects:** `/` (`app/page.jsx`, `features/marketing/`), `/pricing`, `/zatca`, `lib/plans.js`,
+`lib/i18n/server.js`, the display type sizes in `globals.css`
+**Builds on:** ADR-040 (selling costs), ADR-013 (no money arithmetic in the client)
+
+**Context.** `/` sent every visitor to the sign-in form. A merchant who followed a link met a password
+field before being told what the product does, and there was no price and no answer to the first question
+every Saudi merchant asks, about ZATCA.
+
+**Decision.**
+
+1. **`/` is the public page; it does not redirect.** A signed-in visitor is offered the dashboard from the
+   header. The installed application already starts at `/dashboard`, so daily users never pass through.
+2. **One argument, shown on one real order.** The figures are the hand calculation
+   `SellingCostsTest` holds the server to: 200 from Salla paid with Tamara, to 30.90 after goods, fees,
+   commission, shipping and rent. The order is drawn as a disc whose slices are as large as the money they
+   stand for. As the reader scrolls, each slice is named in the ledger and blown off, and the profit settles
+   under the gold line as the shape of Baydar's own mark, with the same area as the slice it came from.
+3. **The markup is the end state.** The server renders the finished ledger. The animation only sets the
+   beginning and plays toward it, so a reader who asked for less motion, a crawler, and a failed script all
+   get the whole argument. Pinned and scrubbed from 768px up. On a phone it plays once on arrival, because a
+   pinned section fights the thumb.
+4. **Motion is spent in one place.** The headline arrives once on load and the threshing floor moves. No
+   section fades in as it enters.
+5. **Screenshots are the product**, taken from the demo snapshot with dates moved to today, cropped below
+   the account bar, in both languages.
+6. **A first visit follows the browser's language.** With no cookie, `Accept-Language` decides
+   (`preferredLocale`). The cookie still wins once a choice is made, and the account wins once signed in.
+7. **The public pages get their own type sizes** (`lead`, `4xl`, `display`). The application's scale still
+   stops at 32.
+
+**Consequences.**
+- If `SellingCostsTest`'s figures change, `features/marketing/example.js` must change with them.
+  `tests/landing.test.jsx` checks that the steps add up and that the slices fill the disc.
+- The screenshots go stale as the product changes; retake them from a freshly restored demo.
